@@ -1,8 +1,14 @@
+package storage;
+
+import model.Resume;
+
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
+public class ArrayStorage implements Storage {
+    private static final int STORAGE_SIZE = 10000;
+
+    Resume[] storage = new Resume[STORAGE_SIZE];
     int size = 0;
 
     public void clear() {
@@ -16,7 +22,7 @@ public class ArrayStorage {
         if (find(resume.getUuid()) != -1) {
             System.out.println("ERROR! Resume already exists. Can`t save.");
         } else {
-            if (size < storage.length) {
+            if (size < STORAGE_SIZE) {
                 storage[size] = resume;
                 size++;
             } else {
