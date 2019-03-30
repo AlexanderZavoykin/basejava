@@ -8,8 +8,8 @@ import model.Resume;
 public class ArrayStorage implements Storage {
     private static final int STORAGE_SIZE = 10000;
 
-    Resume[] storage = new Resume[STORAGE_SIZE];
-    int size = 0;
+    private Resume[] storage = new Resume[STORAGE_SIZE];
+    private int size = 0;
 
     public void clear() {
         for (int i = 0; i < size; i++) {
@@ -19,7 +19,7 @@ public class ArrayStorage implements Storage {
     }
 
     public void save(Resume resume) {
-        if (find(resume.getUuid()) != -1) {
+        if (findIndex(resume.getUuid()) != -1) {
             System.out.println("ERROR! Resume already exists. Can`t save.");
         } else {
             if (size < STORAGE_SIZE) {
@@ -32,16 +32,18 @@ public class ArrayStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        if (find(resume.getUuid()) == -1) {
+        int index = findIndex(resume.getUuid());
+        if (index == -1) {
             System.out.println("Resume is not found. Can`t update.");
         } else {
-            storage[find(resume.getUuid())] = resume;
+            storage[index] = resume;
         }
     }
 
     public Resume get(String uuid) {
-        if (find(uuid) != -1) {
-            return storage[find(uuid)];
+        int index = findIndex(uuid);
+        if (index != -1) {
+            return storage[index];
         } else {
             System.out.println("Resume is not found. Can`t get.");
             return null;
@@ -49,22 +51,14 @@ public class ArrayStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        if (find(uuid) == -1) {
+        int index = findIndex(uuid);
+        if (index == -1) {
             System.out.println("ERROR! Resume is not found. Can`t delete.");
         } else {
-            storage[find(uuid)] = storage[size - 1];
+            storage[index] = storage[size - 1];
             storage[size - 1] = null;
             size--;
         }
-    }
-
-    private int find(String uuid) {
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     public Resume[] getAll() {
@@ -77,5 +71,14 @@ public class ArrayStorage implements Storage {
 
     public int size() {
         return size;
+    }
+
+    private int findIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
