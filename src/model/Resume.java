@@ -3,7 +3,7 @@ package model;
 /**
  * Initial resume class
  */
-public class Resume {
+public class Resume implements Comparable<Resume> {
 
     // Unique identifier
     private String uuid;
@@ -29,6 +29,11 @@ public class Resume {
         Resume resume = (Resume) o;
 
         return uuid.equals(resume.uuid);
+    }
+
+    @Override
+    public int compareTo(Resume r) {
+        return getUuid().compareTo(r.getUuid());
     }
 
     /*@Override

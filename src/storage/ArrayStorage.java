@@ -5,51 +5,23 @@ import model.Resume;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage implements Storage {
-    private static final int STORAGE_SIZE = 10000;
+public class ArrayStorage extends AbstractArrayStorage {
 
-    private Resume[] storage = new Resume[STORAGE_SIZE];
-    private int size = 0;
-
-    public void clear() {
-        for (int i = 0; i < size; i++) {
-            storage[i] = null;
-        }
-        size = 0;
-    }
-
+    @Override
     public void save(Resume resume) {
         if (findIndex(resume.getUuid()) != -1) {
             System.out.println("ERROR! Resume already exists. Can`t save.");
         } else {
-            if (size < STORAGE_SIZE) {
+            if (size >= STORAGE_SIZE) {
+                System.out.println("ERROR! Not enough free space in the storage. Can`t save.");
+            } else {
                 storage[size] = resume;
                 size++;
-            } else {
-                System.out.println("ERROR! Not enough free space in the storage. Can`t save.");
             }
         }
     }
 
-    public void update(Resume resume) {
-        int index = findIndex(resume.getUuid());
-        if (index == -1) {
-            System.out.println("Resume is not found. Can`t update.");
-        } else {
-            storage[index] = resume;
-        }
-    }
-
-    public Resume get(String uuid) {
-        int index = findIndex(uuid);
-        if (index != -1) {
-            return storage[index];
-        } else {
-            System.out.println("Resume is not found. Can`t get.");
-            return null;
-        }
-    }
-
+    @Override
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index == -1) {
@@ -61,19 +33,8 @@ public class ArrayStorage implements Storage {
         }
     }
 
-    public Resume[] getAll() {
-        Resume[] onlyResumes = new Resume[size];
-        for (int i = 0; i < size; i++) {
-            onlyResumes[i] = storage[i];
-        }
-        return onlyResumes;
-    }
-
-    public int size() {
-        return size;
-    }
-
-    private int findIndex(String uuid) {
+    @Override
+    protected int findIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
