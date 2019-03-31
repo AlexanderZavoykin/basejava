@@ -8,16 +8,13 @@ import model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected void add(Resume resume) {
+    protected void add(Resume resume, int index) {
         storage[size] = resume;
-        size++;
     }
 
     @Override
-    protected void remove(String uuid) {
-        storage[getIndex(uuid)] = storage[size - 1];
-        storage[size - 1] = null;
-        size--;
+    protected void remove(int index) {
+        storage[index] = storage[size - 1];
     }
 
     @Override
