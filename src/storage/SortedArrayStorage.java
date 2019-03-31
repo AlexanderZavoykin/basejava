@@ -7,40 +7,23 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void save(Resume resume) {
-        int searchResult = findIndex(resume.getUuid());
-        if (searchResult >= 0) {
-            System.out.println("ERROR! Resume already exists. Can`t save.");
-        } else {
-            if (size < STORAGE_SIZE) {
-                int insertionPoint = -(searchResult + 1);
-                for (int i = size; i > insertionPoint; i--) {
-                    storage[i] = storage[i - 1];
-                }
-                storage[insertionPoint] = resume;
-                size++;
-            } else {
-                System.out.println("ERROR! Not enough free space in the storage. Can`t save.");
-            }
-        }
+    protected void add(Resume resume) {
+        int insertionPoint = -(getIndex(resume.getUuid()) + 1);
+        System.arraycopy(storage, insertionPoint, storage, insertionPoint + 1, size - insertionPoint);
+        storage[insertionPoint] = resume;
+        size++;
     }
 
     @Override
-    public void delete(String uuid) {
-        int index = findIndex(uuid);
-        if (index < 0) {
-            System.out.println("ERROR! Resume is not found. Can`t delete.");
-        } else {
-            for (int i = index; i < size - 1; i++) {
-                storage[i] = storage[i + 1];
-            }
-            storage[size - 1] = null;
-            size--;
-        }
+    protected void remove(String uuid) {
+        int removingPoint = getIndex(uuid);
+        System.arraycopy(storage, removingPoint + 1, storage, removingPoint, size - removingPoint - 1);
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
-    protected int findIndex(String uuid) {
+    protected int getIndex(String uuid) {
         Resume r = new Resume();
         r.setUuid(uuid);
         return Arrays.binarySearch(storage, 0, size, r);

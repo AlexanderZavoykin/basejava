@@ -33,11 +33,11 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public int compareTo(Resume r) {
-        return getUuid().compareTo(r.getUuid());
+        return uuid.compareTo(r.getUuid());
     }
 
-    /*@Override
+    @Override
     public int hashCode() {
         return uuid.hashCode();
-    }*/
+    }
 }

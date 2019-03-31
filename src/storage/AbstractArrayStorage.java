@@ -2,21 +2,33 @@ package storage;
 
 import model.Resume;
 
+import java.util.Arrays;
+
 public abstract class AbstractArrayStorage implements Storage {
-    protected static final int STORAGE_SIZE = 4;
+    protected static final int STORAGE_SIZE = 10000;
 
     protected Resume[] storage = new Resume[STORAGE_SIZE];
     protected int size = 0;
 
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            storage[i] = null;
-        }
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
+    public void save(Resume resume) {
+        if (getIndex(resume.getUuid()) >= 0) {
+            System.out.println("ERROR! Resume already exists. Can`t save.");
+        } else {
+            if (size >= STORAGE_SIZE) {
+                System.out.println("ERROR! Not enough free space in the storage. Can`t save.");
+            } else {
+                add(resume);
+            }
+        }
+    }
+
     public void update(Resume resume) {
-        int index = findIndex(resume.getUuid());
+        int index = getIndex(resume.getUuid());
         if (index < 0) {
             System.out.println("Resume is not found. Can`t update.");
         } else {
@@ -25,7 +37,7 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     public Resume get(String uuid) {
-        int index = findIndex(uuid);
+        int index = getIndex(uuid);
         if (index >= 0) {
             return storage[index];
         } else {
@@ -34,21 +46,26 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public Resume[] getAll() {
-        Resume[] onlyResumes = new Resume[size];
-        for (int i = 0; i < size; i++) {
-            onlyResumes[i] = storage[i];
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0) {
+            System.out.println("ERROR! Resume is not found. Can`t delete.");
+        } else {
+            remove(uuid);
         }
-        return onlyResumes;
+    }
+
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
     }
 
     public int size() {
         return size;
     }
 
-    public abstract void save(Resume resume);
+    protected abstract void add(Resume resume);
 
-    public abstract void delete(String uuid);
+    protected abstract void remove(String uuid);
 
-    protected abstract int findIndex(String uuid);
+    protected abstract int getIndex(String uuid);
 }
