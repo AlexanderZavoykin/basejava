@@ -1,7 +1,7 @@
 package storage;
 
-import exception.AlreadyExistsStorageException;
-import exception.DoesntExistStorageException;
+import exception.ResumeAlreadyExistsStorageException;
+import exception.ResumeDoesNotExistStorageException;
 import exception.StorageException;
 import model.Resume;
 
@@ -21,7 +21,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void save(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index >= 0) {
-            throw new AlreadyExistsStorageException(resume.getUuid());
+            throw new ResumeAlreadyExistsStorageException(resume.getUuid());
         } else {
             if (size >= STORAGE_SIZE) {
                 throw new StorageException("The storage has no more free space", resume.getUuid());
@@ -35,7 +35,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index < 0) {
-            throw new DoesntExistStorageException(resume.getUuid());
+            throw new ResumeDoesNotExistStorageException(resume.getUuid());
         } else {
             storage[index] = resume;
         }
@@ -46,15 +46,14 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return storage[index];
         } else {
-            System.out.println("Resume is not found. Can`t get.");
-            return null;
+            throw new ResumeDoesNotExistStorageException(uuid);
         }
     }
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("ERROR! Resume is not found. Can`t delete.");
+            throw new ResumeDoesNotExistStorageException(uuid);
         } else {
             remove(index);
             storage[size - 1] = null;
