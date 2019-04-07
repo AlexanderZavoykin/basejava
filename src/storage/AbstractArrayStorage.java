@@ -1,5 +1,8 @@
 package storage;
 
+import exception.AlreadyExistsStorageException;
+import exception.DoesntExistStorageException;
+import exception.StorageException;
 import model.Resume;
 
 import java.util.Arrays;
@@ -18,10 +21,10 @@ public abstract class AbstractArrayStorage implements Storage {
     public void save(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index >= 0) {
-            System.out.println("ERROR! Resume already exists. Can`t save.");
+            throw new AlreadyExistsStorageException(resume.getUuid());
         } else {
             if (size >= STORAGE_SIZE) {
-                System.out.println("ERROR! Not enough free space in the storage. Can`t save.");
+                throw new StorageException("The storage has no more free space", resume.getUuid());
             } else {
                 add(resume, index);
                 size++;
@@ -32,7 +35,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index < 0) {
-            System.out.println("Resume is not found. Can`t update.");
+            throw new DoesntExistStorageException(resume.getUuid());
         } else {
             storage[index] = resume;
         }
