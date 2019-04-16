@@ -1,10 +1,13 @@
 package storage;
 
+import exception.StorageException;
 import model.Resume;
 
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
+    protected static final int STORAGE_SIZE = 10000;
+    protected int size = 0;
 
     protected Resume[] storage = new Resume[STORAGE_SIZE];
 
@@ -41,5 +44,20 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size--;
     }
 
+    @Override
+    protected void doSave(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (size() >= STORAGE_SIZE) {
+            throw new StorageException("The storage has no more free space", resume.getUuid());
+        } else {
+            insert(resume, index);
+            size++;
+        }
+    }
+
     protected abstract void displace(int index);
+
+    protected abstract void insert(Resume resume, int index);
+
+
 }

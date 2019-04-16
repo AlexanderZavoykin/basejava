@@ -2,12 +2,10 @@ package storage;
 
 import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
-import exception.StorageException;
 import model.Resume;
 
 public abstract class AbstractStorage implements Storage {
-    protected static final int STORAGE_SIZE = 10000;
-    protected int size = 0;
+
 
     @Override
     public abstract void clear();
@@ -18,12 +16,7 @@ public abstract class AbstractStorage implements Storage {
         if (index >= 0) {
             throw new ResumeAlreadyExistsStorageException(resume.getUuid());
         } else {
-            if (size() >= STORAGE_SIZE) {
-                throw new StorageException("The storage has no more free space", resume.getUuid());
-            } else {
-                insert(resume, index);
-                size++;
-            }
+            doSave(resume);
         }
     }
 
@@ -65,13 +58,13 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract int getIndex(String uuid);
 
-    protected abstract void insert(Resume resume, int index);
-
     protected abstract void doUpdate(Resume resume, int index);
 
     protected abstract Resume doGet(int index);
 
     protected abstract void doDelete(int index);
+
+    protected abstract void doSave(Resume resume);
 
 
 }

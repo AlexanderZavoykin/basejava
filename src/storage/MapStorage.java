@@ -40,10 +40,6 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void insert(Resume resume, int index) {
-    }
-
-    @Override
     protected void doUpdate(Resume resume, int index) {
     }
 
@@ -54,5 +50,10 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected void doDelete(int index) {
+    }
+
+    @Override
+    protected void doSave(Resume resume) {
+
     }
 }
