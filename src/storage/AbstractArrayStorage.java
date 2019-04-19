@@ -45,8 +45,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doSave(Resume resume) {
-        int index = getIndex(resume.getUuid());
+    protected void doSave(Resume resume, int index) {
         if (size() >= STORAGE_SIZE) {
             throw new StorageException("The storage has no more free space", resume.getUuid());
         } else {

@@ -2,41 +2,36 @@ package storage;
 
 import model.Resume;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapStorage extends AbstractStorage {
+    Map<String, Resume> storage = new HashMap<>();
+
     @Override
     public void clear() {
-    }
-
-    @Override
-    public void save(Resume resume) {
-    }
-
-    @Override
-    public void update(Resume resume) {
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        return null;
-    }
-
-    @Override
-    public void delete(String uuid) {
+        storage.clear();
     }
 
     @Override
     public Resume[] getAll() {
-        return new Resume[0];
+        Collection<Resume> valueCollection = storage.values();
+        return valueCollection.toArray(new Resume[size()]);
     }
 
     @Override
     public int size() {
-        return 0;
+        return storage.size();
     }
 
     @Override
     protected int getIndex(String uuid) {
-        return 0;
+        if (storage.containsKey(uuid)) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -50,10 +45,11 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected void doDelete(int index) {
+        storage.remove(null);
     }
 
     @Override
-    protected void doSave(Resume resume) {
-
+    protected void doSave(Resume resume, int index) {
+        storage.put(resume.getUuid(), resume);
     }
 }
