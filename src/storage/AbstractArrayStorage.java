@@ -28,35 +28,44 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Resume resume, int index) {
-        storage[index] = resume;
+    protected boolean hasElement(Resume resume) {
+        if ((Integer) getKey(resume.getUuid()) >= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    protected Resume doGet(int index) {
-        return storage[index];
-    }
-
-    @Override
-    protected void doDelete(int index) {
-        displace(index);
-        storage[size - 1] = null;
-        size--;
-    }
-
-    @Override
-    protected void doSave(Resume resume, int index) {
+    protected void doSave(Resume resume, Object key) {
         if (size() >= STORAGE_SIZE) {
             throw new StorageException("The storage has no more free space", resume.getUuid());
         } else {
-            insert(resume, index);
+            insert(resume, key);
             size++;
         }
     }
 
-    protected abstract void displace(int index);
+    @Override
+    protected void doUpdate(Resume resume, Object key) {
+        storage[(Integer) key] = resume;
+    }
 
-    protected abstract void insert(Resume resume, int index);
+    @Override
+    protected Resume doGet(Object key) {
+        return storage[(Integer) key];
+    }
+
+    @Override
+    protected void doDelete(Object key) {
+        displace(key);
+        storage[size - 1] = null;
+        size--;
+    }
+
+    protected abstract void displace(Object key);
+
+    protected abstract void insert(Resume resume, Object key);
 
 
 }

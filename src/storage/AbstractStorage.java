@@ -12,29 +12,31 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
+        Object key = getKey(resume.getUuid());
+        if (hasElement(resume)) {
             throw new ResumeAlreadyExistsStorageException(resume.getUuid());
         } else {
-            doSave(resume, index);
+            doSave(resume, key);
         }
     }
 
     @Override
     public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index < 0) {
+        Object key = getKey(resume.getUuid());
+
+        if (!hasElement(resume)) {
             throw new ResumeDoesNotExistStorageException(resume.getUuid());
         } else {
-            doUpdate(resume, index);
+            doUpdate(resume, key);
         }
     }
 
     @Override
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            return doGet(index);
+        Resume r = new Resume(uuid);
+        Object key = getKey(uuid);
+        if (hasElement(r)) {
+            return doGet(key);
         } else {
             throw new ResumeDoesNotExistStorageException(uuid);
         }
@@ -42,13 +44,15 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+        Resume r = new Resume(uuid);
+        Object key = getKey(uuid);
+        if (!hasElement(r)) {
             throw new ResumeDoesNotExistStorageException(uuid);
         } else {
-            doDelete(index);
+            doDelete(key);
         }
     }
+
 
     @Override
     public abstract Resume[] getAll();
@@ -56,15 +60,15 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public abstract int size();
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Object getKey(String uuid);
 
-    protected abstract void doUpdate(Resume resume, int index);
+    protected abstract boolean hasElement(Resume resume);
 
-    protected abstract Resume doGet(int index);
+    protected abstract void doSave(Resume resume, Object key);
 
-    protected abstract void doDelete(int index);
+    protected abstract void doUpdate(Resume resume, Object key);
 
-    protected abstract void doSave(Resume resume, int index);
+    protected abstract Resume doGet(Object key);
 
-
+    protected abstract void doDelete(Object key);
 }
