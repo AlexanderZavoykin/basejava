@@ -28,12 +28,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(Resume resume) {
-        if ((Integer) getKey(resume.getUuid()) >= 0) {
-            return true;
-        } else {
-            return false;
-        }
+    protected boolean hasElement(Object key) {
+        Resume r = new Resume((String) key);
+        return (Integer) getKey(r.getUuid()) >= 0;
     }
 
     @Override
@@ -41,7 +38,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (size() >= STORAGE_SIZE) {
             throw new StorageException("The storage has no more free space", resume.getUuid());
         } else {
-            insert(resume, key);
+            insert(resume, (Integer) key);
             size++;
         }
     }
@@ -58,14 +55,14 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected void doDelete(Object key) {
-        displace(key);
+        displace((Integer) key);
         storage[size - 1] = null;
         size--;
     }
 
-    protected abstract void displace(Object key);
+    protected abstract void displace(int index);
 
-    protected abstract void insert(Resume resume, Object key);
+    protected abstract void insert(Resume resume, int index);
 
 
 }

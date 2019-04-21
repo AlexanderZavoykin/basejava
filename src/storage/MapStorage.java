@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    Map<String, Resume> storage = new HashMap<>();
+    private Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
@@ -31,12 +31,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(Resume resume) {
-        if (storage.containsValue(resume)) {
-            return true;
-        } else {
-            return false;
-        }
+    protected boolean hasElement(Object key) {
+        return storage.containsKey(key);
     }
 
     @Override

@@ -12,21 +12,20 @@ public abstract class AbstractStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        Object key = getKey(resume.getUuid());
         if (hasElement(resume)) {
             throw new ResumeAlreadyExistsStorageException(resume.getUuid());
         } else {
+            Object key = getKey(resume.getUuid());
             doSave(resume, key);
         }
     }
 
     @Override
     public void update(Resume resume) {
-        Object key = getKey(resume.getUuid());
-
         if (!hasElement(resume)) {
             throw new ResumeDoesNotExistStorageException(resume.getUuid());
         } else {
+            Object key = getKey(resume.getUuid());
             doUpdate(resume, key);
         }
     }
@@ -34,25 +33,24 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         Resume r = new Resume(uuid);
-        Object key = getKey(uuid);
-        if (hasElement(r)) {
-            return doGet(key);
-        } else {
+        if (!hasElement(r)) {
             throw new ResumeDoesNotExistStorageException(uuid);
+        } else {
+            Object key = getKey(uuid);
+            return doGet(key);
         }
     }
 
     @Override
     public void delete(String uuid) {
         Resume r = new Resume(uuid);
-        Object key = getKey(uuid);
         if (!hasElement(r)) {
             throw new ResumeDoesNotExistStorageException(uuid);
         } else {
+            Object key = getKey(uuid);
             doDelete(key);
         }
     }
-
 
     @Override
     public abstract Resume[] getAll();
@@ -62,7 +60,7 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract Object getKey(String uuid);
 
-    protected abstract boolean hasElement(Resume resume);
+    protected abstract boolean hasElement(Object key);
 
     protected abstract void doSave(Resume resume, Object key);
 

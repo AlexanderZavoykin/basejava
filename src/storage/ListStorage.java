@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
-    List<Resume> storage = new ArrayList<>();
+    private List<Resume> storage = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -25,9 +25,6 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected Object getKey(String uuid) {
-        Resume r = new Resume(uuid);
-        return storage.indexOf(r);
-        /*
         int index = 0;
         for (Resume r : storage) {
             if (r.getUuid().equals(uuid)) {
@@ -35,16 +32,13 @@ public class ListStorage extends AbstractStorage {
             }
             index++;
         }
-        return -1;*/
+        return -1;
     }
 
     @Override
-    protected boolean hasElement(Resume resume) {
-        if (storage.contains(resume)) {
-            return true;
-        } else {
-            return false;
-        }
+    protected boolean hasElement(Object key) {
+        Resume r = new Resume((String) key);
+        return storage.contains(r);
     }
 
     @Override
