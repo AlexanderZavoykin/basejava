@@ -29,8 +29,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected boolean hasElement(Object key) {
-        Resume r = new Resume((String) key);
-        return (Integer) getKey(r.getUuid()) >= 0;
+        return (Integer) key >= 0;
     }
 
     @Override

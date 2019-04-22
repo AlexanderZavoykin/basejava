@@ -37,8 +37,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean hasElement(Object key) {
-        Resume r = new Resume((String) key);
-        return storage.contains(r);
+        return (Integer) key >= 0;
     }
 
     @Override
