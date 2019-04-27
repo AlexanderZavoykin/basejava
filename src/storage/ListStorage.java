@@ -3,6 +3,7 @@ package storage;
 import model.Resume;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
@@ -14,8 +15,10 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.toArray(new Resume[size()]);
+    public List<Resume> getAllSorted() {
+        List<Resume> resumeList = storage;
+        Collections.sort(resumeList, FULL_NAME_COMPARATOR);
+        return resumeList;
     }
 
     @Override

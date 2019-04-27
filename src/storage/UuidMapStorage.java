@@ -2,11 +2,9 @@ package storage;
 
 import model.Resume;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class MapStorage extends AbstractStorage {
+public class UuidMapStorage extends AbstractStorage {
     private Map<String, Resume> storage = new HashMap<>();
 
     @Override
@@ -15,9 +13,11 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
+    public List<Resume> getAllSorted() {
         Collection<Resume> valueCollection = storage.values();
-        return valueCollection.toArray(new Resume[size()]);
+        List<Resume> resumeList = new ArrayList<>(valueCollection);
+        Collections.sort(resumeList, FULL_NAME_COMPARATOR);
+        return resumeList;
     }
 
     @Override

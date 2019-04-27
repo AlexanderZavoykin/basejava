@@ -3,8 +3,11 @@ package storage;
 import model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
+
+    private static final Comparator<Resume> UUID_COMPARATOR = (r1, r2) -> r1.getUuid().compareTo(r2.getUuid());
 
     @Override
     protected void insert(Resume resume, int index) {
@@ -21,6 +24,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected Object getKey(String uuid) {
         Resume r = new Resume(uuid);
-        return Arrays.binarySearch(storage, 0, size, r);
+        return Arrays.binarySearch(storage, 0, size, r, UUID_COMPARATOR);
     }
 }

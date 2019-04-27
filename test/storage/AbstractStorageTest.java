@@ -7,16 +7,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public abstract class AbstractStorageTest {
     protected Storage storage;
     private final String UUID_1 = "uuid_1";
     private final String UUID_2 = "uuid_2";
     private final String UUID_3 = "uuid_3";
     private final String UUID_CHECK = "uuid_check";
-    private final Resume RESUME_1 = new Resume(UUID_1);
-    private final Resume RESUME_2 = new Resume(UUID_2);
-    private final Resume RESUME_3 = new Resume(UUID_3);
-    private final Resume RESUME_CHECK = new Resume(UUID_CHECK);
+    private final String FULL_NAME_1 = "Mark Twain";
+    private final String FULL_NAME_2 = "Jorge Amado";
+    private final String FULL_NAME_3 = "Ernest Hemingway";
+    private final String FULL_NAME_CHECK = "Pancho Villa";
+    private final Resume RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
+    private final Resume RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
+    private final Resume RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
+    private final Resume RESUME_CHECK = new Resume(UUID_CHECK, FULL_NAME_CHECK);
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -86,8 +92,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAll() {
-        Resume[] checkStorage = new Resume[]{new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
-        Assert.assertArrayEquals(checkStorage, storage.getAll());
+        Resume[] checkStorage = new Resume[]{new Resume(UUID_1, FULL_NAME_1), new Resume(UUID_2, FULL_NAME_2), new Resume(UUID_3, FULL_NAME_3)};
+        Arrays.sort(checkStorage, AbstractStorage.FULL_NAME_COMPARATOR);
+        Assert.assertArrayEquals(checkStorage, storage.getAllSorted().toArray());
         Assert.assertEquals(checkStorage.length, storage.size());
     }
 

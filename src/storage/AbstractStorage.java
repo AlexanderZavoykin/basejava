@@ -4,54 +4,59 @@ import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
 import model.Resume;
 
-public abstract class AbstractStorage implements Storage {
+import java.util.Comparator;
+import java.util.List;
 
+public abstract class AbstractStorage implements Storage {
+    protected static final Comparator<Resume> FULL_NAME_COMPARATOR = (o1, o2) -> {
+        if (!o1.getFullName().equals(o2.getFullName())) {
+            return o1.getFullName().compareTo(o2.getFullName());
+        } else {
+            return o1.getUuid().compareTo(o2.getUuid());
+        }
+    };
 
     @Override
     public abstract void clear();
 
     @Override
     public void save(Resume resume) {
-        Object key = getKey(resume.getUuid());
-        if (hasElement(key)) {
-            throw new ResumeAlreadyExistsStorageException(resume.getUuid());
-        } else {
-            doSave(resume, key);
-        }
+        doSave(resume, getExistingKey(resume.getUuid()));
     }
 
     @Override
     public void update(Resume resume) {
-        Object key = getKey(resume.getUuid());
-        if (!hasElement(key)) {
-            throw new ResumeDoesNotExistStorageException(resume.getUuid());
-        } else {
-            doUpdate(resume, key);
-        }
+        doUpdate(resume, getNotExistingKey(resume.getUuid()));
     }
 
     @Override
     public Resume get(String uuid) {
-        Object key = getKey(uuid);
-        if (!hasElement(key)) {
-            throw new ResumeDoesNotExistStorageException(uuid);
-        } else {
-            return doGet(key);
-        }
+        return doGet(getNotExistingKey(uuid));
     }
 
     @Override
     public void delete(String uuid) {
+        doDelete(getNotExistingKey(uuid));
+    }
+
+    private Object getExistingKey(String uuid) {
+        Object key = getKey(uuid);
+        if (hasElement(key)) {
+            throw new ResumeAlreadyExistsStorageException(uuid);
+        }
+        return key;
+    }
+
+    private Object getNotExistingKey(String uuid) {
         Object key = getKey(uuid);
         if (!hasElement(key)) {
             throw new ResumeDoesNotExistStorageException(uuid);
-        } else {
-            doDelete(key);
         }
+        return key;
     }
 
     @Override
-    public abstract Resume[] getAll();
+    public abstract List<Resume> getAllSorted();
 
     @Override
     public abstract int size();
