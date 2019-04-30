@@ -9,11 +9,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
-    protected static final Comparator<Resume> FULL_NAME_COMPARATOR =
-            (r1, r2) -> r1.getFullName().compareTo(r2.getFullName());
 
-    protected static final Comparator<Resume> UUID_COMPARATOR =
-            (r1, r2) -> r1.getUuid().compareTo(r2.getUuid());
+    //https://blog.jooq.org/2014/01/31/java-8-friday-goodies-lambdas-and-sorting/
+    private static final Comparator<Resume> RESUME_COMPARATOR =
+            Comparator.comparing((Resume r) -> r.getFullName()).thenComparing(r -> r.getUuid());
 
     @Override
     public void save(Resume resume) {
@@ -35,6 +34,13 @@ public abstract class AbstractStorage implements Storage {
         doDelete(getNotExistingSearchKey(uuid));
     }
 
+    @Override
+    public List<Resume> getAllSorted() {
+        List<Resume> list = getList();
+        Collections.sort(list, RESUME_COMPARATOR);
+        return list;
+    }
+
     private Object getExistingSearchKey(String uuid) {
         Object searchKey = getSearchKey(uuid);
         if (hasElement(searchKey)) {
@@ -49,13 +55,6 @@ public abstract class AbstractStorage implements Storage {
             throw new ResumeDoesNotExistStorageException(uuid);
         }
         return searchKey;
-    }
-
-    @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> list = getList();
-        Collections.sort(list, FULL_NAME_COMPARATOR.thenComparing(UUID_COMPARATOR));
-        return list;
     }
 
     protected abstract List<Resume> getList();

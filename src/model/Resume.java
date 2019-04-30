@@ -1,5 +1,7 @@
 package model;
 
+import java.util.UUID;
+
 /**
  * Initial resume class
  */
@@ -8,7 +10,7 @@ public class Resume {
     private String fullName;
 
     public Resume(String fullName) {
-        this.fullName = fullName;
+        this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {

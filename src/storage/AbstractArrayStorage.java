@@ -20,8 +20,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getList() {
-        Resume[] array = (Resume[]) Arrays.copyOf(storage, size());
-        return Arrays.asList(array);
+        return Arrays.asList(Arrays.copyOf(storage, size()));
     }
 
     @Override
