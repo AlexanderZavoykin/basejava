@@ -19,10 +19,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        Resume[] resumeArray = Arrays.copyOfRange(storage, 0, size);
-        Arrays.sort(resumeArray, FULL_NAME_COMPARATOR);
-        return Arrays.asList(resumeArray);
+    public List<Resume> getList() {
+        Resume[] array = (Resume[]) Arrays.copyOf(storage, size());
+        return Arrays.asList(array);
     }
 
     @Override
@@ -31,33 +30,33 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(Object key) {
-        return (Integer) key >= 0;
+    protected boolean hasElement(Object searchKey) {
+        return (Integer) searchKey >= 0;
     }
 
     @Override
-    protected void doSave(Resume resume, Object key) {
+    protected void doSave(Resume resume, Object searchKey) {
         if (size() >= STORAGE_SIZE) {
             throw new StorageException("The storage has no more free space", resume.getUuid());
         } else {
-            insert(resume, (Integer) key);
+            insert(resume, (Integer) searchKey);
             size++;
         }
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object key) {
-        storage[(Integer) key] = resume;
+    protected void doUpdate(Resume resume, Object searchKey) {
+        storage[(Integer) searchKey] = resume;
     }
 
     @Override
-    protected Resume doGet(Object key) {
-        return storage[(Integer) key];
+    protected Resume doGet(Object searchKey) {
+        return storage[(Integer) searchKey];
     }
 
     @Override
-    protected void doDelete(Object key) {
-        displace((Integer) key);
+    protected void doDelete(Object searchKey) {
+        displace((Integer) searchKey);
         storage[size - 1] = null;
         size--;
     }
@@ -65,6 +64,5 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void displace(int index);
 
     protected abstract void insert(Resume resume, int index);
-
 
 }

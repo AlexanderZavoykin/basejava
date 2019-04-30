@@ -2,7 +2,10 @@ package storage;
 
 import model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ResumeMapStorage extends AbstractStorage {
     private Map<String, Resume> storage = new HashMap<>();
@@ -13,11 +16,8 @@ public class ResumeMapStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        Collection<Resume> valueCollection = storage.values();
-        List<Resume> resumeList = new ArrayList<>(valueCollection);
-        Collections.sort(resumeList, FULL_NAME_COMPARATOR);
-        return resumeList;
+    public List<Resume> getList() {
+        return new ArrayList<Resume>(storage.values());
     }
 
     @Override
@@ -26,13 +26,13 @@ public class ResumeMapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getKey(String uuid) {
+    protected Resume getSearchKey(String uuid) {
         return storage.get(uuid);
     }
 
     @Override
     protected boolean hasElement(Object resume) {
-        return storage.containsValue(resume);
+        return resume != null;
     }
 
     @Override

@@ -2,7 +2,10 @@ package storage;
 
 import model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UuidMapStorage extends AbstractStorage {
     private Map<String, Resume> storage = new HashMap<>();
@@ -13,11 +16,8 @@ public class UuidMapStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        Collection<Resume> valueCollection = storage.values();
-        List<Resume> resumeList = new ArrayList<>(valueCollection);
-        Collections.sort(resumeList, FULL_NAME_COMPARATOR);
-        return resumeList;
+    public List<Resume> getList() {
+        return new ArrayList<Resume>(storage.values());
     }
 
     @Override
@@ -26,32 +26,32 @@ public class UuidMapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getKey(String uuid) {
+    protected String getSearchKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected boolean hasElement(Object key) {
-        return storage.containsKey(key);
+    protected boolean hasElement(Object searchkey) {
+        return storage.containsKey(searchkey);
     }
 
     @Override
-    protected void doSave(Resume resume, Object key) {
-        storage.put((String) key, resume);
+    protected void doSave(Resume resume, Object searchkey) {
+        storage.put((String) searchkey, resume);
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object key) {
-        storage.put((String) key, resume);
+    protected void doUpdate(Resume resume, Object searchkey) {
+        storage.put((String) searchkey, resume);
     }
 
     @Override
-    protected Resume doGet(Object key) {
-        return storage.get((String) key);
+    protected Resume doGet(Object searchkey) {
+        return storage.get((String) searchkey);
     }
 
     @Override
-    protected void doDelete(Object key) {
-        storage.remove((String) key);
+    protected void doDelete(Object searchkey) {
+        storage.remove((String) searchkey);
     }
 }

@@ -15,14 +15,12 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
     public void saveToFullStorage() {
         storage.clear();
         try {
-            for (int i = 1; i <= AbstractArrayStorage.STORAGE_SIZE; i++) {
-                storage.save(new Resume());
+            for (int i = 0; i < AbstractArrayStorage.STORAGE_SIZE; i++) {
+                storage.save(new Resume("new" + i, "John Smith"));
             }
         } catch (StorageException e) {
             Assert.fail("Test is failed: storage was fullfilled before");
         }
-        storage.save(new Resume());
+        storage.save(new Resume("one more", "Jane Dow"));
     }
-
-
 }

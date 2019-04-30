@@ -4,72 +4,71 @@ import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
 import model.Resume;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
-    protected static final Comparator<Resume> FULL_NAME_COMPARATOR = (o1, o2) -> {
-        if (!o1.getFullName().equals(o2.getFullName())) {
-            return o1.getFullName().compareTo(o2.getFullName());
-        } else {
-            return o1.getUuid().compareTo(o2.getUuid());
-        }
-    };
+    protected static final Comparator<Resume> FULL_NAME_COMPARATOR =
+            (r1, r2) -> r1.getFullName().compareTo(r2.getFullName());
 
-    @Override
-    public abstract void clear();
+    protected static final Comparator<Resume> UUID_COMPARATOR =
+            (r1, r2) -> r1.getUuid().compareTo(r2.getUuid());
 
     @Override
     public void save(Resume resume) {
-        doSave(resume, getExistingKey(resume.getUuid()));
+        doSave(resume, getExistingSearchKey(resume.getUuid()));
     }
 
     @Override
     public void update(Resume resume) {
-        doUpdate(resume, getNotExistingKey(resume.getUuid()));
+        doUpdate(resume, getNotExistingSearchKey(resume.getUuid()));
     }
 
     @Override
     public Resume get(String uuid) {
-        return doGet(getNotExistingKey(uuid));
+        return doGet(getNotExistingSearchKey(uuid));
     }
 
     @Override
     public void delete(String uuid) {
-        doDelete(getNotExistingKey(uuid));
+        doDelete(getNotExistingSearchKey(uuid));
     }
 
-    private Object getExistingKey(String uuid) {
-        Object key = getKey(uuid);
-        if (hasElement(key)) {
+    private Object getExistingSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (hasElement(searchKey)) {
             throw new ResumeAlreadyExistsStorageException(uuid);
         }
-        return key;
+        return searchKey;
     }
 
-    private Object getNotExistingKey(String uuid) {
-        Object key = getKey(uuid);
-        if (!hasElement(key)) {
+    private Object getNotExistingSearchKey(String uuid) {
+        Object searchKey = getSearchKey(uuid);
+        if (!hasElement(searchKey)) {
             throw new ResumeDoesNotExistStorageException(uuid);
         }
-        return key;
+        return searchKey;
     }
 
     @Override
-    public abstract List<Resume> getAllSorted();
+    public List<Resume> getAllSorted() {
+        List<Resume> list = getList();
+        Collections.sort(list, FULL_NAME_COMPARATOR.thenComparing(UUID_COMPARATOR));
+        return list;
+    }
 
-    @Override
-    public abstract int size();
+    protected abstract List<Resume> getList();
 
-    protected abstract Object getKey(String uuid);
+    protected abstract Object getSearchKey(String uuid);
 
-    protected abstract boolean hasElement(Object key);
+    protected abstract boolean hasElement(Object searchKey);
 
-    protected abstract void doSave(Resume resume, Object key);
+    protected abstract void doSave(Resume resume, Object searchKey);
 
-    protected abstract void doUpdate(Resume resume, Object key);
+    protected abstract void doUpdate(Resume resume, Object searchKey);
 
-    protected abstract Resume doGet(Object key);
+    protected abstract Resume doGet(Object searchKey);
 
-    protected abstract void doDelete(Object key);
+    protected abstract void doDelete(Object searchKey);
 }
