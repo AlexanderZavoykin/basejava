@@ -6,7 +6,7 @@ import model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_SIZE = 10000;
     protected int size = 0;
 
@@ -20,7 +20,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getList() {
-        return Arrays.asList(Arrays.copyOf(storage, size()));
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     @Override
@@ -29,33 +29,33 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(Object searchKey) {
-        return (Integer) searchKey >= 0;
+    protected boolean hasElement(Integer searchKey) {
+        return searchKey >= 0;
     }
 
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Integer searchKey) {
         if (size() >= STORAGE_SIZE) {
             throw new StorageException("The storage has no more free space", resume.getUuid());
         } else {
-            insert(resume, (Integer) searchKey);
+            insert(resume, searchKey);
             size++;
         }
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object searchKey) {
-        storage[(Integer) searchKey] = resume;
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        storage[searchKey] = resume;
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage[(Integer) searchKey];
+    protected Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        displace((Integer) searchKey);
+    protected void doDelete(Integer searchKey) {
+        displace(searchKey);
         storage[size - 1] = null;
         size--;
     }

@@ -1,19 +1,22 @@
 package model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Initial resume class
  */
 public class Resume {
-    private String uuid; // Unique identifier
-    private String fullName;
+    private final String uuid; // Unique identifier
+    private final String fullName;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(fullName, "Full name can`t be null");
+        Objects.requireNonNull(uuid, "UUID can`t be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -28,7 +31,7 @@ public class Resume {
 
     @Override
     public String toString() {
-        return uuid + " " + fullName;
+        return uuid + ' ' + fullName;
     }
 
     @Override

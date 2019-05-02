@@ -5,7 +5,7 @@ import model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private List<Resume> storage = new ArrayList<>();
 
     @Override
@@ -15,7 +15,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getList() {
-        return new ArrayList(storage);
+        return new ArrayList<>(storage);
     }
 
     @Override
@@ -33,28 +33,28 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean hasElement(Object searchKey) {
-        return (Integer) searchKey >= 0;
+    protected boolean hasElement(Integer searchKey) {
+        return searchKey >= 0;
     }
 
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Integer searchKey) {
         storage.add(resume);
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object searchKey) {
-        storage.set((int) searchKey, resume);
+    protected void doUpdate(Resume resume, Integer searchKey) {
+        storage.set(searchKey, resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage.get((int) searchKey);
+    protected Resume doGet(Integer searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        storage.remove((int) searchKey);
+    protected void doDelete(Integer searchKey) {
+        storage.remove(searchKey.intValue());
     }
 
 }

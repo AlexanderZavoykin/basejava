@@ -8,7 +8,11 @@ import java.util.Comparator;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     private static final Comparator<Resume> UUID_COMPARATOR =
-            (r1, r2) -> r1.getUuid().compareTo(r2.getUuid());
+            SortedArrayStorage::compare;
+
+    private static int compare(Resume r1, Resume r2) {
+        return r1.getUuid().compareTo(r2.getUuid());
+    }
 
     @Override
     protected void insert(Resume resume, int index) {
