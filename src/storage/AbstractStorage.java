@@ -7,30 +7,37 @@ import model.Resume;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class AbstractStorage<SearchKey> implements Storage {
+
+    private final static Logger LOGGER = Logger.getLogger(AbstractStorage.class.getName());
 
     private static final Comparator<Resume> RESUME_COMPARATOR =
             Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     @Override
     public void save(Resume resume) {
-        doSave(resume, getExistingSearchKey(resume.getUuid()));
+        LOGGER.info("save " + resume);
+        doSave(resume, getNotExistingSearchKey(resume.getUuid()));
     }
 
     @Override
     public void update(Resume resume) {
-        doUpdate(resume, getNotExistingSearchKey(resume.getUuid()));
+        LOGGER.info("update " + resume);
+        doUpdate(resume, getExistingSearchKey(resume.getUuid()));
     }
 
     @Override
     public Resume get(String uuid) {
-        return doGet(getNotExistingSearchKey(uuid));
+        LOGGER.info("get " + uuid);
+        return doGet(getExistingSearchKey(uuid));
     }
 
     @Override
     public void delete(String uuid) {
-        doDelete(getNotExistingSearchKey(uuid));
+        LOGGER.info("delete " + uuid);
+        doDelete(getExistingSearchKey(uuid));
     }
 
     @Override
@@ -40,17 +47,19 @@ public abstract class AbstractStorage<SearchKey> implements Storage {
         return list;
     }
 
-    private SearchKey getExistingSearchKey(String uuid) {
+    private SearchKey getNotExistingSearchKey(String uuid) {
         SearchKey searchKey = getSearchKey(uuid);
         if (hasElement(searchKey)) {
+            LOGGER.warning("getNotExistingSearchKey " + uuid);
             throw new ResumeAlreadyExistsStorageException(uuid);
         }
         return searchKey;
     }
 
-    private SearchKey getNotExistingSearchKey(String uuid) {
+    private SearchKey getExistingSearchKey(String uuid) {
         SearchKey searchKey = getSearchKey(uuid);
         if (!hasElement(searchKey)) {
+            LOGGER.warning("getExistingSearchKey " + uuid);
             throw new ResumeDoesNotExistStorageException(uuid);
         }
         return searchKey;

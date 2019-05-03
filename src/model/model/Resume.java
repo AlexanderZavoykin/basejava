@@ -1,6 +1,5 @@
-package model;
+package model.model;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,8 +9,8 @@ import java.util.UUID;
 public class Resume {
     private final String uuid; // Unique identifier
     private final String fullName;
-    private HashMap<ContactType, String> contacts;
-    private HashMap<SectionType, Section> sections;
+    private Section sections;
+    private Contact contact;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -30,14 +29,6 @@ public class Resume {
 
     public String getFullName() {
         return fullName;
-    }
-
-    public HashMap<ContactType, String> getContacts() {
-        return contacts;
-    }
-
-    public HashMap<SectionType, Section> getSections() {
-        return sections;
     }
 
     @Override
