@@ -1,25 +1,16 @@
 package model;
 
-import java.time.YearMonth;
+import java.time.LocalDate;
+
+
 
 public class Organization {
     private String name;
-    private YearMonth startDate;
-    private YearMonth endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String function;
     private String description;
 
-    {
-        name = "";
-        startDate = YearMonth.of(1900, 1);
-        endDate = YearMonth.of(1900, 12);
-        function = "";
-        description = "";
-    }
-
-    public Organization() {
-
-    }
 
     public String getName() {
         return name;
@@ -29,19 +20,19 @@ public class Organization {
         this.name = name;
     }
 
-    public YearMonth getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(YearMonth startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public YearMonth getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(YearMonth endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
@@ -59,5 +50,31 @@ public class Organization {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Organization)) return false;
+
+        Organization that = (Organization) o;
+
+        if (!name.equals(that.name)) return false;
+        if (!startDate.equals(that.startDate)) return false;
+        if (!endDate.equals(that.endDate)) return false;
+        if (!function.equals(that.function)) return false;
+        return description.equals(that.description);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + startDate.hashCode();
+        result = 31 * result + endDate.hashCode();
+        result = 31 * result + function.hashCode();
+        result = 31 * result + description.hashCode();
+        return result;
     }
 }

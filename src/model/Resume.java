@@ -1,6 +1,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,8 +11,8 @@ import java.util.UUID;
 public class Resume {
     private final String uuid; // Unique identifier
     private final String fullName;
-    private HashMap<ContactType, String> contacts;
-    private HashMap<SectionType, Section> sections;
+    private Map<ContactType, String> contacts;
+    private Map<SectionType, AbstractSection> sections;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -22,6 +23,8 @@ public class Resume {
         Objects.requireNonNull(uuid, "UUID can`t be null");
         this.uuid = uuid;
         this.fullName = fullName;
+        contacts = new HashMap<>();
+        sections = new HashMap<>();
     }
 
     public String getUuid() {
@@ -32,11 +35,11 @@ public class Resume {
         return fullName;
     }
 
-    public HashMap<ContactType, String> getContacts() {
+    public Map<ContactType, String> getContacts() {
         return contacts;
     }
 
-    public HashMap<SectionType, Section> getSections() {
+    public Map<SectionType, AbstractSection> getSections() {
         return sections;
     }
 
@@ -48,15 +51,23 @@ public class Resume {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Resume)) return false;
 
         Resume resume = (Resume) o;
 
-        return (uuid.equals(resume.uuid));
+        if (!uuid.equals(resume.uuid)) return false;
+        if (!fullName.equals(resume.fullName)) return false;
+        if (!contacts.equals(resume.contacts)) return false;
+        return sections.equals(resume.sections);
+
     }
 
     @Override
     public int hashCode() {
-        return (uuid + fullName).hashCode();
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + contacts.hashCode();
+        result = 31 * result + sections.hashCode();
+        return result;
     }
 }

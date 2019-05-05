@@ -3,7 +3,7 @@ package model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SkillSection extends Section {
+public class SkillSection extends AbstractSection {
     private List<String> skills;
 
     public SkillSection() {
@@ -22,4 +22,19 @@ public class SkillSection extends Section {
         return skills;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SkillSection)) return false;
+
+        SkillSection that = (SkillSection) o;
+
+        return skills.equals(that.skills);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return skills.hashCode();
+    }
 }
