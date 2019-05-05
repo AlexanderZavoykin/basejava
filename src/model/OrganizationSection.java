@@ -14,10 +14,6 @@ public class OrganizationSection extends AbstractSection {
         organizations.remove(o);
     }
 
-    public List<Organization> getOrganizations() {
-        return organizations;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,5 +28,14 @@ public class OrganizationSection extends AbstractSection {
     @Override
     public int hashCode() {
         return organizations.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for (Organization o : organizations) {
+            result += o.toString() + "\n";
+        }
+        return result;
     }
 }

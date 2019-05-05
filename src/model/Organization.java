@@ -1,16 +1,27 @@
 package model;
 
-import java.time.LocalDate;
-
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 
 
 public class Organization {
     private String name;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private YearMonth startDate;
+    private YearMonth endDate;
     private String function;
     private String description;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/uuuu");
 
+    public Organization() {
+    }
+
+    public Organization(String name, YearMonth startDate, YearMonth endDate, String function, String description) {
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.function = function;
+        this.description = description;
+    }
 
     public String getName() {
         return name;
@@ -20,19 +31,19 @@ public class Organization {
         this.name = name;
     }
 
-    public LocalDate getStartDate() {
+    public YearMonth getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(YearMonth startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public YearMonth getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(YearMonth endDate) {
         this.endDate = endDate;
     }
 
@@ -76,5 +87,11 @@ public class Organization {
         result = 31 * result + function.hashCode();
         result = 31 * result + description.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return name + "\n" + startDate.format(FORMATTER) + " - " + endDate.format(FORMATTER) + " " + function + "\n" +
+                description;
     }
 }

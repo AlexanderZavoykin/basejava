@@ -1,9 +1,9 @@
 package model;
 
-public class QualitySection extends AbstractSection {
+public class TextSection extends AbstractSection {
     private String body;
 
-    public QualitySection(String body) {
+    public TextSection(String body) {
         this.body = body;
     }
 
@@ -18,9 +18,9 @@ public class QualitySection extends AbstractSection {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QualitySection)) return false;
+        if (!(o instanceof TextSection)) return false;
 
-        QualitySection that = (QualitySection) o;
+        TextSection that = (TextSection) o;
 
         return body.equals(that.body);
 
@@ -29,5 +29,10 @@ public class QualitySection extends AbstractSection {
     @Override
     public int hashCode() {
         return body.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return body;
     }
 }

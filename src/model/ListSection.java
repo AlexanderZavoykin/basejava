@@ -3,10 +3,10 @@ package model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SkillSection extends AbstractSection {
+public class ListSection extends AbstractSection {
     private List<String> skills;
 
-    public SkillSection() {
+    public ListSection() {
         skills = new LinkedList<>();
     }
 
@@ -18,16 +18,13 @@ public class SkillSection extends AbstractSection {
         skills.remove(skill);
     }
 
-    public List<String> getSkills() {
-        return skills;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SkillSection)) return false;
+        if (!(o instanceof ListSection)) return false;
 
-        SkillSection that = (SkillSection) o;
+        ListSection that = (ListSection) o;
 
         return skills.equals(that.skills);
 
@@ -36,5 +33,14 @@ public class SkillSection extends AbstractSection {
     @Override
     public int hashCode() {
         return skills.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for (String skill : skills) {
+            result += skill + "\n";
+        }
+        return result;
     }
 }

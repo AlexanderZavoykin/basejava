@@ -1,6 +1,6 @@
 import model.*;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 
 public class ResumeTestData {
 
@@ -16,18 +16,21 @@ public class ResumeTestData {
         resume.getContacts().put(ContactType.STACKOVERFLOW_PROFILE, "https://stackoverflow.com/users/548473/gkislin");
         resume.getContacts().put(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
+
         //fill OBJECTIVE section
         resume.getSections().put(SectionType.OBJECTIVE,
-                new QualitySection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise " +
+                new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise " +
                         "технологиям"));
+
 
         //fill PERSONAL section
         resume.getSections().put(SectionType.PERSONAL,
-                new QualitySection("Аналитический склад ума, сильная логика, креативность, инициативность. " +
+                new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. " +
                         "Пурист кода и архитектуры."));
 
+
         //fill ACHIEVEMENT section
-        SkillSection achievementSection = new SkillSection();
+        ListSection achievementSection = new ListSection();
         achievementSection.addSkill("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", " +
                 "\"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). " +
                 "Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. " +
@@ -50,8 +53,9 @@ public class ResumeTestData {
         resume.getSections().put(SectionType.ACHIEVEMENT,
                 achievementSection);
 
+
         //fill QUALIFICATION section
-        SkillSection qualificationSection = new SkillSection();
+        ListSection qualificationSection = new ListSection();
         qualificationSection.addSkill("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualificationSection.addSkill("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         qualificationSection.addSkill("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
@@ -74,146 +78,121 @@ public class ResumeTestData {
         qualificationSection.addSkill("Отличное знание и опыт применения концепций ООП, SOA, шаблонов");
         qualificationSection.addSkill("проектрирования, архитектурных шаблонов, UML, функционального программирования");
         qualificationSection.addSkill("Родной русский, английский \"upper intermediate\"");
+        resume.getSections().put(SectionType.QUALIFICATION, qualificationSection);
+
 
         //fill EXPERIENCE section
         OrganizationSection experienceSection = new OrganizationSection();
-        Organization experience_1 = new Organization();
-        experience_1.setName("Java Online Projects");
-        experience_1.setStartDate(LocalDate.of(2013, 10, 1));
-        experience_1.setEndDate(LocalDate.now()); // TODO create method to convert to String "now"
-        experience_1.setFunction("Автор проекта.");
-        experience_1.setDescription("Создание, организация и проведение Java онлайн проектов и стажировок.");
+        Organization experience_1 = new Organization("Java Online Projects", YearMonth.of(2013, 10),
+                YearMonth.now(), "Автор проекта.", "Создание, организация и проведение Java онлайн " +
+                "проектов и стажировок.");
         experienceSection.addOrganization(experience_1);
 
-        Organization experience_2 = new Organization();
-        experience_2.setName("Wrike");
-        experience_2.setStartDate(LocalDate.of(2014, 10, 1));
-        experience_2.setEndDate(LocalDate.of(2016, 1, 1));
-        experience_2.setFunction("Старший разработчик (backend)");
-        experience_2.setDescription("Проектирование и разработка онлайн платформы управления проектами Wrike " +
-                "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, " +
-                "авторизация по OAuth1, OAuth2, JWT SSO.");
+        Organization experience_2 = new Organization("Wrike", YearMonth.of(2014, 10),
+                YearMonth.of(2016, 1), "Старший разработчик (backend)", "Проектирование " +
+                "и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, " +
+                "Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
         experienceSection.addOrganization(experience_2);
 
-        Organization experience_3 = new Organization();
-        experience_3.setName("RIT Center");
-        experience_3.setStartDate(LocalDate.of(2012, 4, 1));
-        experience_3.setEndDate(LocalDate.of(2014, 10, 1));
-        experience_3.setFunction("Java архитектор");
-        experience_3.setDescription("Организация процесса разработки системы ERP для разных окружений: релизная " +
-                "политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), " +
-                "конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. " +
-                "Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения " +
-                "(почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера " +
-                "документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, " +
+        Organization experience_3 = new Organization("RIT Center", YearMonth.of(2012, 4),
+                YearMonth.of(2014, 10), "Java архитектор", "Организация процесса " +
+                "разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI " +
+                "(Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), " +
+                "AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: " +
+                "CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). " +
+                "Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. " +
+                "Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, " +
                 "Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, " +
                 "PL/Python");
         experienceSection.addOrganization(experience_3);
 
-        Organization experience_4 = new Organization();
-        experience_4.setName("Luxoft (Deutsche Bank)");
-        experience_4.setStartDate(LocalDate.of(2010, 12,1));
-        experience_4.setEndDate(LocalDate.of(2012, 4,1));
-        experience_4.setFunction("Ведущий программист");
-        experience_4.setDescription("Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, " +
-                "SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. Реализация " +
-                "RIA-приложения для администрирования, мониторинга и анализа результатов в области алгоритмического " +
-                "трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.");
+        Organization experience_4 = new Organization("Luxoft (Deutsche Bank)", YearMonth.of(2010, 12),
+                YearMonth.of(2012, 4), "Ведущий программист", "Участие в проекте " +
+                "Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). " +
+                "Реализация клиентской и серверной части CRM. Реализация RIA-приложения для администрирования, " +
+                "мониторинга и анализа результатов в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, " +
+                "GWT, ExtGWT (GXT), Highstock, Commet, HTML5.");
         experienceSection.addOrganization(experience_4);
 
-        Organization experience_5 = new Organization();
-        experience_5.setName("Yota");
-        experience_5.setStartDate(LocalDate.of(2008, 6, 1));
-        experience_5.setEndDate(LocalDate.of(2010, 12, 1));
-        experience_5.setFunction("Ведущий специалист");
-        experience_5.setDescription("Дизайн и имплементация Java EE фреймворка для отдела \"Платежные Системы\" " +
-                "(GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация " +
-                "администрирования, статистики и мониторинга фреймворка. Разработка online JMX клиента (Python/ Jython, " +
-                "Django, ExtJS)");
+        Organization experience_5 = new Organization("Yota", YearMonth.of(2008, 6),
+                YearMonth.of(2010, 12), "Ведущий специалист", "Дизайн и имплементация " +
+                "Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, " +
+                "Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга " +
+                "фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)");
         experienceSection.addOrganization(experience_5);
 
-        Organization experience_6 = new Organization();
-        experience_6.setName("Enkata");
-        experience_6.setStartDate(LocalDate.of(2007, 3, 1));
-        experience_6.setEndDate(LocalDate.of(2008, 6,1));
-        experience_6.setFunction("Разработчик ПО");
-        experience_6.setDescription("Реализация клиентской (Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, " +
-                "Tomcat, JMS) частей кластерного J2EE приложения (OLAP, Data mining).");
+        Organization experience_6 = new Organization("Enkata",YearMonth.of(2007, 3),
+                YearMonth.of(2008, 6),"Разработчик ПО","Реализация клиентской " +
+                "(Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения " +
+                "(OLAP, Data mining).");
         experienceSection.addOrganization(experience_6);
 
-        Organization experience_7 = new Organization();
-        experience_7.setName("Siemens AG");
-        experience_7.setStartDate(LocalDate.of(2005, 1,1));
-        experience_7.setEndDate(LocalDate.of(2007, 2,1));
-        experience_7.setFunction("Разработчик ПО");
-        experience_7.setDescription("Разработка информационной модели, проектирование интерфейсов, реализация и " +
-                "отладка ПО на мобильной IN платформе Siemens @vantage (Java, Unix).");
+        Organization experience_7 = new Organization("Siemens AG",YearMonth.of(2005, 1),
+                YearMonth.of(2007, 2),"Разработчик ПО","Разработка информационной " +
+                "модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens " +
+                "@vantage (Java, Unix).");
         experienceSection.addOrganization(experience_7);
 
-        Organization experience_8 = new Organization();
-        experience_8.setName("Enkata");
-        experience_8.setStartDate(LocalDate.of(1997, 9,1));
-        experience_8.setEndDate(LocalDate.of(2005, 1,1));
-        experience_8.setFunction("Инженер по аппаратному и программному тестированию");
-        experience_8.setDescription("Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 " +
+        Organization experience_8 = new Organization("Enkata",YearMonth.of(1997, 9),
+                YearMonth.of(2005, 1),"Инженер по аппаратному и программному тестированию",
+                "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 " +
                 "S12 (CHILL, ASM).");
         experienceSection.addOrganization(experience_8);
 
+        resume.getSections().put(SectionType.EXPERIENCE, experienceSection);
+
+
         //fill EDUCATION section
         OrganizationSection educationSection = new OrganizationSection();
-        Organization education_1 = new Organization();
-        education_1.setName("Coursera");
-        education_1.setStartDate(LocalDate.of(2013, 3,1));
-        education_1.setEndDate(LocalDate.of(2013, 5,1));
-        education_1.setFunction("\"Functional Programming Principles in Scala\" by Martin Odersky");
+
+        Organization education_1 = new Organization("Coursera",YearMonth.of(2013, 3),
+                YearMonth.of(2013, 5),"\"Functional Programming Principles in Scala\" by " +
+                "Martin Odersky", "");
         educationSection.addOrganization(education_1);
 
-        Organization education_2 = new Organization();
-        education_2.setName("Luxoft");
-        education_2.setStartDate(LocalDate.of(2011, 3,1));
-        education_2.setEndDate(LocalDate.of(2011, 4,1));
-        education_2.setFunction("Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        Organization education_2 = new Organization("Luxoft",YearMonth.of(2011, 3),
+                YearMonth.of(2011, 4),"Курс \"Объектно-ориентированный анализ ИС. Концептуальное " +
+                "моделирование на UML.\"", "");
         educationSection.addOrganization(education_2);
 
-        Organization education_3 = new Organization();
-        education_3.setName("Siemens AG");
-        education_3.setStartDate(LocalDate.of(2005, 1,1));
-        education_3.setEndDate(LocalDate.of(2005, 4,1));
-        education_3.setFunction("3 месяца обучения мобильным IN сетям (Берлин)");
+        Organization education_3 = new Organization("Siemens AG",YearMonth.of(2005, 1),
+                YearMonth.of(2005, 4),"3 месяца обучения мобильным IN сетям (Берлин)","");
         educationSection.addOrganization(education_3);
 
-        Organization education_4 = new Organization();
-        education_4.setName("Alcatel");
-        education_4.setStartDate(LocalDate.of(1997, 9,1));
-        education_4.setEndDate(LocalDate.of(1998, 3,1));
-        education_4.setFunction("6 месяцев обучения цифровым телефонным сетям (Москва)");
+        Organization education_4 = new Organization("Alcatel",YearMonth.of(1997, 9),
+                YearMonth.of(1998, 3),"6 месяцев обучения цифровым телефонным сетям (Москва)",
+                "");
         educationSection.addOrganization(education_4);
 
-        Organization education_5 = new Organization();
-        education_5.setName("Санкт-Петербургский национальный исследовательский университет информационных " +
-                "технологий, механики и оптики");
-        education_5.setStartDate(LocalDate.of(1993, 9,1));
-        education_5.setEndDate(LocalDate.of(1996, 7,1));
-        education_5.setFunction("Аспирантура (программист С, С++)");
+        Organization education_5 = new Organization("Санкт-Петербургский национальный исследовательский " +
+                "университет информационных технологий, механики и оптики",YearMonth.of(1993, 9),
+                YearMonth.of(1996, 7),"Аспирантура (программист С, С++)","");
         educationSection.addOrganization(education_5);
 
-        Organization education_6 = new Organization();
-        education_6.setName("Санкт-Петербургский национальный исследовательский университет информационных " +
-                "технологий, механики и оптики");
-        education_6.setStartDate(LocalDate.of(1987, 9,1));
-        education_6.setEndDate(LocalDate.of(1993, 7,1));
-        education_6.setFunction("Инженер (программист Fortran, C)");
+        Organization education_6 = new Organization("Санкт-Петербургский национальный исследовательский " +
+                "университет информационных технологий, механики и оптики",YearMonth.of(1987, 9),
+                YearMonth.of(1993, 7),"Инженер (программист Fortran, C)","");
         educationSection.addOrganization(education_6);
 
-        Organization education_7 = new Organization();
-        education_7.setName("Заочная физико-техническая школа при МФТИ");
-        education_7.setStartDate(LocalDate.of(1984, 9,1));
-        education_7.setEndDate(LocalDate.of(1987, 6,1));
-        education_7.setFunction("Закончил с отличием");
+        Organization education_7 = new Organization("Заочная физико-техническая школа при МФТИ",
+                YearMonth.of(1984, 9),YearMonth.of(1987, 6),"Закончил с отличием",
+                "");
         educationSection.addOrganization(education_7);
 
-        System.out.println(education_5.getEndDate());
+        resume.getSections().put(SectionType.EDUCATION, educationSection);
+
+
+        // out to console
+        System.out.println(resume.getFullName());
+
+        for (ContactType ct : ContactType.values()) {
+            System.out.print(ct.getTitle() + ": ");
+            System.out.println(resume.getContacts().get(ct));
+        }
+
+        for (SectionType st : SectionType.values()) {
+            System.out.println(st.getTitle());
+            System.out.println(resume.getSections().get(st).toString());
+        }
     }
-
-
 }

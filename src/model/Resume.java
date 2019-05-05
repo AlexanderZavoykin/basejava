@@ -1,9 +1,6 @@
 package model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -23,8 +20,8 @@ public class Resume {
         Objects.requireNonNull(uuid, "UUID can`t be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        contacts = new HashMap<>();
-        sections = new HashMap<>();
+        contacts = new EnumMap<>(ContactType.class);
+        sections = new EnumMap<>(SectionType.class);
     }
 
     public String getUuid() {
