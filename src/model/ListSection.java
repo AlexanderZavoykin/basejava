@@ -2,6 +2,7 @@ package model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class ListSection extends AbstractSection {
     private List<String> skills;
@@ -11,6 +12,7 @@ public class ListSection extends AbstractSection {
     }
 
     public void addSkill(String skill) {
+        Objects.requireNonNull(skill, "Content must not be null");
         skills.add(skill);
     }
 

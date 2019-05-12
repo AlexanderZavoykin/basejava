@@ -2,11 +2,13 @@ package model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class OrganizationSection extends AbstractSection {
     private List<Organization> organizations = new LinkedList<>();
 
     public void addOrganization(Organization o) {
+        Objects.requireNonNull(o, "Content must not be null");
         organizations.add(o);
     }
 
