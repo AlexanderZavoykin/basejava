@@ -2,15 +2,17 @@ package model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Organization {
     private Link link;
     private List<Period> periods;
 
-    public Organization(Link link) {
+    public Organization(Link link, Period period) {
         this.link = link;
         periods = new LinkedList();
+        addPeriod(period);
     }
 
     public Link getLink() {
@@ -21,7 +23,14 @@ public class Organization {
         this.link = link;
     }
 
+    public void addPeriod(Period period) {
+        Objects.requireNonNull(period, "Period must not be null");
+        periods.add(period);
+    }
 
+    public void removePeriod(Period period) {
+        periods.remove(period);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -31,26 +40,25 @@ public class Organization {
         Organization that = (Organization) o;
 
         if (!link.equals(that.link)) return false;
-        if (!startDate.equals(that.startDate)) return false;
-        if (!endDate.equals(that.endDate)) return false;
-        if (!title.equals(that.title)) return false;
-        return description != null ? description.equals(that.description) : that.description == null;
-
+        return periods.equals(that.periods);
     }
 
     @Override
     public int hashCode() {
         int result = link.hashCode();
-        result = 31 * result + startDate.hashCode();
-        result = 31 * result + endDate.hashCode();
-        result = 31 * result + title.hashCode();
-        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + periods.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return link.toString() + "\n" + startDate.format(FORMATTER) + " - " + endDate.format(FORMATTER) + " " + title + "\n" +
-                description;
+        String result = "";
+        result += link.toString();
+        for (Period p : periods) {
+            result += p.toString();
+        }
+        result += "\n";
+        return result;
+
     }
 }

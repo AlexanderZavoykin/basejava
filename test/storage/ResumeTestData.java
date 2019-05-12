@@ -1,12 +1,13 @@
+package storage;
+
 import model.*;
 
 import java.time.YearMonth;
 
 public class ResumeTestData {
+    private final static Resume resume = new Resume("Григорий Кислин");
 
-    public static void main(String[] args) {
-        Resume resume = new Resume("Григорий Кислин");
-
+    public static void fillTestResume(Resume resume) {
         // fill contacts
         resume.getContacts().put(ContactType.PHONE, "+7(921) 855-0482");
         resume.getContacts().put(ContactType.SKYPE, "grigory.kislin");
@@ -84,75 +85,76 @@ public class ResumeTestData {
         //fill EXPERIENCE section
         OrganizationSection experienceSection = new OrganizationSection();
         Organization experience_1 = new Organization(new Link("Java Online Projects", "http://javaops.ru/"),
-                YearMonth.of(2013, 10),
-                YearMonth.now(), "Автор проекта.",
-                "Создание, организация и проведение Java онлайн проектов и стажировок.");
+                new Period(YearMonth.of(2013, 10),
+                        YearMonth.now(),
+                        "Автор проекта.",
+                        "Создание, организация и проведение Java онлайн проектов и стажировок."));
         experienceSection.addOrganization(experience_1);
 
         Organization experience_2 = new Organization(new Link("Wrike", "https://www.wrike.com/"),
-                YearMonth.of(2014, 10),
-                YearMonth.of(2016, 1),
-                "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы " +
-                "управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
-                " Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
+                new Period(YearMonth.of(2014, 10),
+                        YearMonth.of(2016, 1),
+                        "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы " +
+                        "управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
+                        " Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
         experienceSection.addOrganization(experience_2);
 
         Organization experience_3 = new Organization(new Link("RIT Center"),
-                YearMonth.of(2012, 4),
-                YearMonth.of(2014, 10),
-                "Java архитектор", "Организация процесса " +
-                "разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI " +
-                "(Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), " +
-                "AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: " +
-                "CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). " +
-                "Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. " +
-                "Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, " +
-                "Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, " +
-                "PL/Python");
+                new Period(YearMonth.of(2012, 4),
+                        YearMonth.of(2014, 10),
+                        "Java архитектор", "Организация процесса " +
+                        "разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI " +
+                        "(Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), " +
+                        "AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: " +
+                        "CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). " +
+                        "Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. " +
+                        "Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, " +
+                        "Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, " +
+                        "PL/Python"));
         experienceSection.addOrganization(experience_3);
 
         Organization experience_4 = new Organization(new Link("Luxoft (Deutsche Bank)",
                 "http://www.luxoft.ru/"),
-                YearMonth.of(2010, 12),
-                YearMonth.of(2012, 4),
-                "Ведущий программист", "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, " +
-                "Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. " +
-                "Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области " +
-                "алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5.");
+                new Period(YearMonth.of(2010, 12),
+                        YearMonth.of(2012, 4),
+                        "Ведущий программист", "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, " +
+                        "Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. " +
+                        "Реализация RIA-приложения для администрирования, мониторинга и анализа результатов в области " +
+                        "алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), Highstock, Commet, HTML5."));
         experienceSection.addOrganization(experience_4);
 
         Organization experience_5 = new Organization(new Link("Yota", "https://www.yota.ru/"),
-                YearMonth.of(2008, 6),
-                YearMonth.of(2010, 12),
-                "Ведущий специалист", "Дизайн и имплементация " +
-                "Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, " +
-                "Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга " +
-                "фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)");
+                new Period(YearMonth.of(2008, 6),
+                        YearMonth.of(2010, 12),
+                        "Ведущий специалист", "Дизайн и имплементация " +
+                        "Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, " +
+                        "Servlet 2.4, JSP, JMX, JMS, Maven2). Реализация администрирования, статистики и мониторинга " +
+                        "фреймворка. Разработка online JMX клиента (Python/ Jython, Django, ExtJS)"));
         experienceSection.addOrganization(experience_5);
 
         Organization experience_6 = new Organization(new Link("Enkata", "http://enkata.com/"),
-                YearMonth.of(2007, 3),
-                YearMonth.of(2008, 6),
-                "Разработчик ПО", "Реализация клиентской " +
-                "(Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения " +
-                "(OLAP, Data mining).");
+                new Period(YearMonth.of(2007, 3),
+                        YearMonth.of(2008, 6),
+                        "Разработчик ПО", "Реализация клиентской " +
+                        "(Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения " +
+                        "(OLAP, Data mining)."));
         experienceSection.addOrganization(experience_6);
 
         Organization experience_7 = new Organization(new Link("Siemens AG",
                 "https://new.siemens.com/ru/ru.html"),
-                YearMonth.of(2005, 1),
-                YearMonth.of(2007, 2),
-                "Разработчик ПО", "Разработка информационной " +
-                "модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens " +
-                "@vantage (Java, Unix).");
+                new Period(YearMonth.of(2005, 1),
+                        YearMonth.of(2007, 2),
+                        "Разработчик ПО", "Разработка информационной " +
+                        "модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens " +
+                        "@vantage (Java, Unix)."));
         experienceSection.addOrganization(experience_7);
 
         Organization experience_8 = new Organization(new Link("Alcatel", "http://www.alcatel.ru/"),
-                YearMonth.of(1997, 9),
-                YearMonth.of(2005, 1),
-                "Инженер по аппаратному и программному тестированию",
-                "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 " +
-                        "S12 (CHILL, ASM).");
+                new Period(YearMonth.of(1997, 9),
+                        YearMonth.of(2005, 1),
+                        "Инженер по аппаратному и программному тестированию",
+                        "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 " +
+                                "S12 (CHILL, ASM)."));
         experienceSection.addOrganization(experience_8);
 
         resume.getSections().put(SectionType.EXPERIENCE, experienceSection);
@@ -163,58 +165,55 @@ public class ResumeTestData {
 
         Organization education_1 = new Organization(new Link("Coursera",
                 "https://www.coursera.org/learn/progfun1"),
-                YearMonth.of(2013, 3),
-                YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by " +
-                "Martin Odersky", "");
+                new Period(YearMonth.of(2013, 3),
+                        YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by " +
+                        "Martin Odersky", ""));
         educationSection.addOrganization(education_1);
 
         Organization education_2 = new Organization(new Link("Luxoft",
                 "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy__analiz_is_kontseptualnoe_" +
                         "modelirovanie_na_uml_dlya_sistemnyh_analitikov_.html"),
-                YearMonth.of(2011, 3),
-                YearMonth.of(2011, 4),
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", "");
+                new Period(YearMonth.of(2011, 3),
+                        YearMonth.of(2011, 4),
+                        "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", ""));
         educationSection.addOrganization(education_2);
 
         Organization education_3 = new Organization(new Link("Siemens AG", "https://new.siemens.com/ru/ru.html"),
-                YearMonth.of(2005, 1),
-                YearMonth.of(2005, 4),
-                "3 месяца обучения мобильным IN сетям (Берлин)", "");
+                new Period(YearMonth.of(2005, 1),
+                        YearMonth.of(2005, 4),
+                        "3 месяца обучения мобильным IN сетям (Берлин)", ""));
         educationSection.addOrganization(education_3);
 
         Organization education_4 = new Organization(new Link("Alcatel", "http://www.alcatel.ru/"),
-                YearMonth.of(1997, 9),
-                YearMonth.of(1998, 3),
-                "6 месяцев обучения цифровым телефонным сетям (Москва)",
-                "");
+                new Period(YearMonth.of(1997, 9),
+                        YearMonth.of(1998, 3),
+                        "6 месяцев обучения цифровым телефонным сетям (Москва)",
+                        ""));
         educationSection.addOrganization(education_4);
 
         Organization education_5 = new Organization(new Link("Санкт-Петербургский национальный исследовательский " +
                 "университет информационных технологий, механики и оптики", "http://www.ifmo.ru/ru/"),
-                YearMonth.of(1993, 9),
-                YearMonth.of(1996, 7),
-                "Аспирантура (программист С, С++)", "");
+                new Period(YearMonth.of(1993, 9),
+                        YearMonth.of(1996, 7),
+                        "Аспирантура (программист С, С++)", ""));
+        education_5.addPeriod(new Period(YearMonth.of(1987, 9),
+                YearMonth.of(1993, 7),
+                "Инженер (программист Fortran, C)", ""));
         educationSection.addOrganization(education_5);
 
-        Organization education_6 = new Organization(new Link("Санкт-Петербургский национальный исследовательский " +
-                "университет информационных технологий, механики и оптики", "http://www.ifmo.ru/ru/"),
-                YearMonth.of(1987, 9),
-                YearMonth.of(1993, 7),
-                "Инженер (программист Fortran, C)", "");
+
+        Organization education_6 = new Organization(new Link("Заочная физико-техническая школа при МФТИ",
+                "http://www.school.mipt.ru/"),
+                new Period(YearMonth.of(1984, 9),
+                        YearMonth.of(1987, 6),
+                        "Закончил с отличием",
+                        ""));
         educationSection.addOrganization(education_6);
 
-        Organization education_7 = new Organization(new Link("Заочная физико-техническая школа при МФТИ",
-                "http://www.school.mipt.ru/"),
-                YearMonth.of(1984, 9),
-                YearMonth.of(1987, 6),
-                "Закончил с отличием",
-                "");
-        educationSection.addOrganization(education_7);
-
         resume.getSections().put(SectionType.EDUCATION, educationSection);
+    }
 
-
-        // out to console
+    public static void printTestResume(Resume resume) {
         System.out.println(resume.getFullName());
 
         for (ContactType ct : ContactType.values()) {
@@ -224,7 +223,14 @@ public class ResumeTestData {
 
         for (SectionType st : SectionType.values()) {
             System.out.println(st.getTitle());
-            System.out.println(resume.getSections().get(st).toString());
+            System.out.print(resume.getSections().get(st).toString());
         }
     }
+
+    public static void main(String[] args) {
+        fillTestResume(resume);
+        printTestResume(resume);
+
+    }
+
 }

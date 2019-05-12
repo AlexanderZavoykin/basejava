@@ -27,6 +27,9 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
+        ResumeTestData.fillTestResume(RESUME_1);
+        ResumeTestData.fillTestResume(RESUME_2);
+        ResumeTestData.fillTestResume(RESUME_3);
         storage.clear();
         storage.save(RESUME_1);
         storage.save(RESUME_2);

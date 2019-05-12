@@ -53,6 +53,10 @@ public class Link {
 
     @Override
     public String toString() {
-        return name + "\n" + (url != null ? url + "\n" : "");
+        String s = "";
+        if (url != null) {
+            s += url + "\n";
+        }
+        return name + "  " + s;
     }
 }

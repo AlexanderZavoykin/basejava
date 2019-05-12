@@ -4,6 +4,7 @@ import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
 import model.Resume;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -75,7 +76,7 @@ public abstract class AbstractStorage<SearchKey> implements Storage {
 
     protected abstract void doUpdate(Resume resume, SearchKey searchKey);
 
-    protected abstract Resume doGet(SearchKey searchKey);
+    protected abstract Resume doGet(SearchKey searchKey) throws IOException;
 
     protected abstract void doDelete(SearchKey searchKey);
 }

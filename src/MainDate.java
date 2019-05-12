@@ -18,7 +18,5 @@ public class MainDate {
         LocalTime lt = LocalTime.now();
         LocalDateTime ldt = LocalDateTime.of(ld, lt);
         System.out.println(ldt);
-
-
     }
 }
