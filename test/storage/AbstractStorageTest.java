@@ -16,9 +16,9 @@ public abstract class AbstractStorageTest {
     private final String UUID_2 = "uuid_2";
     private final String UUID_3 = "uuid_3";
     private final String UUID_CHECK = "uuid_check";
-    private final Resume RESUME_1 = new Resume(UUID_1, "Mark Twain");
-    private final Resume RESUME_2 = new Resume(UUID_2, "Jorge Amado");
-    private final Resume RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
+    private final Resume RESUME_1 = ResumeTestData.createTestResume(UUID_1, "Mark Twain");
+    private final Resume RESUME_2 = ResumeTestData.createTestResume(UUID_2, "Jorge Amado");
+    private final Resume RESUME_3 = ResumeTestData.createTestResume(UUID_3, "Ernest Hemingway");
     protected final Resume RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
 
     protected AbstractStorageTest(Storage storage) {
@@ -27,9 +27,6 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() {
-        ResumeTestData.fillTestResume(RESUME_1);
-        ResumeTestData.fillTestResume(RESUME_2);
-        ResumeTestData.fillTestResume(RESUME_3);
         storage.clear();
         storage.save(RESUME_1);
         storage.save(RESUME_2);

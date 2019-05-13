@@ -5,9 +5,9 @@ import model.*;
 import java.time.YearMonth;
 
 public class ResumeTestData {
-    private final static Resume resume = new Resume("Григорий Кислин");
 
-    public static void fillTestResume(Resume resume) {
+    public static Resume createTestResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
         // fill contacts
         resume.getContacts().put(ContactType.PHONE, "+7(921) 855-0482");
         resume.getContacts().put(ContactType.SKYPE, "grigory.kislin");
@@ -17,18 +17,15 @@ public class ResumeTestData {
         resume.getContacts().put(ContactType.STACKOVERFLOW_PROFILE, "https://stackoverflow.com/users/548473/gkislin");
         resume.getContacts().put(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
-
         //fill OBJECTIVE section
         resume.getSections().put(SectionType.OBJECTIVE,
                 new TextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise " +
                         "технологиям"));
 
-
         //fill PERSONAL section
         resume.getSections().put(SectionType.PERSONAL,
                 new TextSection("Аналитический склад ума, сильная логика, креативность, инициативность. " +
                         "Пурист кода и архитектуры."));
-
 
         //fill ACHIEVEMENT section
         ListSection achievementSection = new ListSection();
@@ -53,7 +50,6 @@ public class ResumeTestData {
 
         resume.getSections().put(SectionType.ACHIEVEMENT,
                 achievementSection);
-
 
         //fill QUALIFICATION section
         ListSection qualificationSection = new ListSection();
@@ -80,7 +76,6 @@ public class ResumeTestData {
         qualificationSection.addSkill("проектрирования, архитектурных шаблонов, UML, функционального программирования");
         qualificationSection.addSkill("Родной русский, английский \"upper intermediate\"");
         resume.getSections().put(SectionType.QUALIFICATION, qualificationSection);
-
 
         //fill EXPERIENCE section
         OrganizationSection experienceSection = new OrganizationSection();
@@ -159,7 +154,6 @@ public class ResumeTestData {
 
         resume.getSections().put(SectionType.EXPERIENCE, experienceSection);
 
-
         //fill EDUCATION section
         OrganizationSection educationSection = new OrganizationSection();
 
@@ -201,7 +195,6 @@ public class ResumeTestData {
                 "Инженер (программист Fortran, C)", ""));
         educationSection.addOrganization(education_5);
 
-
         Organization education_6 = new Organization(new Link("Заочная физико-техническая школа при МФТИ",
                 "http://www.school.mipt.ru/"),
                 new Period(YearMonth.of(1984, 9),
@@ -211,6 +204,8 @@ public class ResumeTestData {
         educationSection.addOrganization(education_6);
 
         resume.getSections().put(SectionType.EDUCATION, educationSection);
+
+        return resume;
     }
 
     public static void printTestResume(Resume resume) {
@@ -228,9 +223,8 @@ public class ResumeTestData {
     }
 
     public static void main(String[] args) {
-        fillTestResume(resume);
+        Resume resume = createTestResume(null, "Григорий Кислин");
         printTestResume(resume);
-
     }
 
 }

@@ -34,10 +34,10 @@ public class OrganizationSection extends AbstractSection {
 
     @Override
     public String toString() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Organization o : organizations) {
-            result += o.toString() + "\n";
+            result.append(o.toString() + "\n");
         }
-        return result;
+        return result.toString();
     }
 }

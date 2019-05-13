@@ -4,14 +4,14 @@ public class MainFile {
 
     public static void printFileList(File dir) {
         File[] fileArray = dir.listFiles();
-        for (File f : fileArray) {
-            if (f.isDirectory()) {
-                System.out.print(" ");
-                System.out.println("DIRECTORY: " + f.getName());
-                printFileList(f);
-                System.out.println();
-            } else {
-                System.out.println("- " + f.getName());
+        if (fileArray != null) {
+            for (File f : fileArray) {
+                if (f.isDirectory()) {
+                    System.out.println();
+                    printFileList(f);
+                } else {
+                    System.out.println("- " + f.getName());
+                }
             }
         }
     }

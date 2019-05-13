@@ -52,13 +52,13 @@ public class Organization {
 
     @Override
     public String toString() {
-        String result = "";
-        result += link.toString();
+        StringBuilder result = new StringBuilder();
+        result.append(link.toString());
         for (Period p : periods) {
-            result += p.toString();
+            result.append(p.toString());
         }
-        result += "\n";
-        return result;
+        result.append("\n");
+        return result.toString();
 
     }
 }
