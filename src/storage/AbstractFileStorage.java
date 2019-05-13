@@ -88,14 +88,23 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     public void clear() {
         File[] fileArray = directory.listFiles();
         if (fileArray != null)
-        for (File f : fileArray) {
-            doDelete(f);
-        }
+            for (File f : fileArray) {
+                doDelete(f);
+            }
     }
 
     @Override
     public int size() {
-        return directory.listFiles().length;
+        File[] fileArray = directory.listFiles();
+        int size = 0;
+        if (fileArray != null) {
+            for (File f : fileArray) {
+                if (f.isFile()) {
+                    size++;
+                }
+            }
+        }
+        return size;
     }
 
     protected abstract void doWrite(Resume resume, File file) throws IOException;
