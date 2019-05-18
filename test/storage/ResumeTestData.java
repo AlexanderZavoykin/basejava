@@ -1,6 +1,7 @@
 package storage;
 
 import model.*;
+import util.DateUtil;
 
 import java.time.YearMonth;
 
@@ -80,14 +81,14 @@ public class ResumeTestData {
         //fill EXPERIENCE section
         OrganizationSection experienceSection = new OrganizationSection();
         Organization experience_1 = new Organization(new Link("Java Online Projects", "http://javaops.ru/"),
-                new Period(YearMonth.of(2013, 10),
-                        YearMonth.now(),
+                new Organization.Period(YearMonth.of(2013, 10),
+                        DateUtil.NOW,
                         "Автор проекта.",
                         "Создание, организация и проведение Java онлайн проектов и стажировок."));
         experienceSection.addOrganization(experience_1);
 
         Organization experience_2 = new Organization(new Link("Wrike", "https://www.wrike.com/"),
-                new Period(YearMonth.of(2014, 10),
+                new Organization.Period(YearMonth.of(2014, 10),
                         YearMonth.of(2016, 1),
                         "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы " +
                         "управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
@@ -95,7 +96,7 @@ public class ResumeTestData {
         experienceSection.addOrganization(experience_2);
 
         Organization experience_3 = new Organization(new Link("RIT Center"),
-                new Period(YearMonth.of(2012, 4),
+                new Organization.Period(YearMonth.of(2012, 4),
                         YearMonth.of(2014, 10),
                         "Java архитектор", "Организация процесса " +
                         "разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI " +
@@ -110,7 +111,7 @@ public class ResumeTestData {
 
         Organization experience_4 = new Organization(new Link("Luxoft (Deutsche Bank)",
                 "http://www.luxoft.ru/"),
-                new Period(YearMonth.of(2010, 12),
+                new Organization.Period(YearMonth.of(2010, 12),
                         YearMonth.of(2012, 4),
                         "Ведущий программист", "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, " +
                         "Spring, Spring MVC, SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. " +
@@ -119,7 +120,7 @@ public class ResumeTestData {
         experienceSection.addOrganization(experience_4);
 
         Organization experience_5 = new Organization(new Link("Yota", "https://www.yota.ru/"),
-                new Period(YearMonth.of(2008, 6),
+                new Organization.Period(YearMonth.of(2008, 6),
                         YearMonth.of(2010, 12),
                         "Ведущий специалист", "Дизайн и имплементация " +
                         "Java EE фреймворка для отдела \"Платежные Системы\" (GlassFish v2.1, v3, OC4J, EJB3, JAX-WS RI 2.1, " +
@@ -128,7 +129,7 @@ public class ResumeTestData {
         experienceSection.addOrganization(experience_5);
 
         Organization experience_6 = new Organization(new Link("Enkata", "http://enkata.com/"),
-                new Period(YearMonth.of(2007, 3),
+                new Organization.Period(YearMonth.of(2007, 3),
                         YearMonth.of(2008, 6),
                         "Разработчик ПО", "Реализация клиентской " +
                         "(Eclipse RCP) и серверной (JBoss 4.2, Hibernate 3.0, Tomcat, JMS) частей кластерного J2EE приложения " +
@@ -137,7 +138,7 @@ public class ResumeTestData {
 
         Organization experience_7 = new Organization(new Link("Siemens AG",
                 "https://new.siemens.com/ru/ru.html"),
-                new Period(YearMonth.of(2005, 1),
+                new Organization.Period(YearMonth.of(2005, 1),
                         YearMonth.of(2007, 2),
                         "Разработчик ПО", "Разработка информационной " +
                         "модели, проектирование интерфейсов, реализация и отладка ПО на мобильной IN платформе Siemens " +
@@ -145,7 +146,7 @@ public class ResumeTestData {
         experienceSection.addOrganization(experience_7);
 
         Organization experience_8 = new Organization(new Link("Alcatel", "http://www.alcatel.ru/"),
-                new Period(YearMonth.of(1997, 9),
+                new Organization.Period(YearMonth.of(1997, 9),
                         YearMonth.of(2005, 1),
                         "Инженер по аппаратному и программному тестированию",
                         "Тестирование, отладка, внедрение ПО цифровой телефонной станции Alcatel 1000 " +
@@ -159,7 +160,7 @@ public class ResumeTestData {
 
         Organization education_1 = new Organization(new Link("Coursera",
                 "https://www.coursera.org/learn/progfun1"),
-                new Period(YearMonth.of(2013, 3),
+                new Organization.Period(YearMonth.of(2013, 3),
                         YearMonth.of(2013, 5), "\"Functional Programming Principles in Scala\" by " +
                         "Martin Odersky", ""));
         educationSection.addOrganization(education_1);
@@ -167,19 +168,19 @@ public class ResumeTestData {
         Organization education_2 = new Organization(new Link("Luxoft",
                 "https://www.luxoft-training.ru/kurs/obektno-orientirovannyy__analiz_is_kontseptualnoe_" +
                         "modelirovanie_na_uml_dlya_sistemnyh_analitikov_.html"),
-                new Period(YearMonth.of(2011, 3),
+                new Organization.Period(YearMonth.of(2011, 3),
                         YearMonth.of(2011, 4),
                         "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"", ""));
         educationSection.addOrganization(education_2);
 
         Organization education_3 = new Organization(new Link("Siemens AG", "https://new.siemens.com/ru/ru.html"),
-                new Period(YearMonth.of(2005, 1),
+                new Organization.Period(YearMonth.of(2005, 1),
                         YearMonth.of(2005, 4),
                         "3 месяца обучения мобильным IN сетям (Берлин)", ""));
         educationSection.addOrganization(education_3);
 
         Organization education_4 = new Organization(new Link("Alcatel", "http://www.alcatel.ru/"),
-                new Period(YearMonth.of(1997, 9),
+                new Organization.Period(YearMonth.of(1997, 9),
                         YearMonth.of(1998, 3),
                         "6 месяцев обучения цифровым телефонным сетям (Москва)",
                         ""));
@@ -187,17 +188,17 @@ public class ResumeTestData {
 
         Organization education_5 = new Organization(new Link("Санкт-Петербургский национальный исследовательский " +
                 "университет информационных технологий, механики и оптики", "http://www.ifmo.ru/ru/"),
-                new Period(YearMonth.of(1993, 9),
+                new Organization.Period(YearMonth.of(1993, 9),
                         YearMonth.of(1996, 7),
                         "Аспирантура (программист С, С++)", ""));
-        education_5.addPeriod(new Period(YearMonth.of(1987, 9),
+        education_5.addPeriod(new Organization.Period(YearMonth.of(1987, 9),
                 YearMonth.of(1993, 7),
                 "Инженер (программист Fortran, C)", ""));
         educationSection.addOrganization(education_5);
 
         Organization education_6 = new Organization(new Link("Заочная физико-техническая школа при МФТИ",
                 "http://www.school.mipt.ru/"),
-                new Period(YearMonth.of(1984, 9),
+                new Organization.Period(YearMonth.of(1984, 9),
                         YearMonth.of(1987, 6),
                         "Закончил с отличием",
                         ""));

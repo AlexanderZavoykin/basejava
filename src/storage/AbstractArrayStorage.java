@@ -9,8 +9,11 @@ import java.util.List;
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_SIZE = 10000;
     protected int size = 0;
-
     protected Resume[] storage = new Resume[STORAGE_SIZE];
+
+    protected abstract void displace(int index);
+
+    protected abstract void insert(Resume resume, int index);
 
     @Override
     public void clear() {
@@ -59,9 +62,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         storage[size - 1] = null;
         size--;
     }
-
-    protected abstract void displace(int index);
-
-    protected abstract void insert(Resume resume, int index);
-
 }

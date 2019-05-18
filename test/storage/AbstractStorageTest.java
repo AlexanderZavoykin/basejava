@@ -7,10 +7,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
+    protected final static String STORAGE_STRING_PATH = "E:\\JAVA\\basejava\\storage";
+    protected final static File STORAGE_DIRECTORY = new File(STORAGE_STRING_PATH);
+
     protected Storage storage;
     private final String UUID_1 = "uuid_1";
     private final String UUID_2 = "uuid_2";
@@ -55,7 +59,9 @@ public abstract class AbstractStorageTest {
     public void update() {
         Resume newResume = new Resume(UUID_1, "Emiliano Zapata");
         storage.update(newResume);
-        Assert.assertSame(newResume, storage.get(UUID_1));
+        //doesn`t work with serialized resume
+        //Assert.assertSame(newResume, storage.get(UUID_1));
+        Assert.assertTrue(newResume.equals(storage.get(UUID_1)));
     }
 
     @Test(expected = ResumeDoesNotExistStorageException.class)
