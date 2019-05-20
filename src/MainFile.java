@@ -2,19 +2,32 @@ import java.io.File;
 
 public class MainFile {
 
+
     public static void printFileList(File dir) {
         File[] fileArray = dir.listFiles();
         if (fileArray != null) {
             for (File f : fileArray) {
+
                 if (f.isDirectory()) {
-                    System.out.println();
+                    addSpaces(f);
+                    System.out.println("Directory: " + f.getName());
                     printFileList(f);
+                    System.out.println();
                 } else {
-                    System.out.println("- " + f.getName());
+                    addSpaces(f);
+                    System.out.println(f.getName());
                 }
             }
         }
     }
+
+    private static void addSpaces(File dir) {
+        int spaces = (int) dir.getPath().chars().filter(ch -> ch=='\\').count();
+        for (int i = 0; i < spaces; i++) {
+            System.out.print("  ");
+        }
+    }
+
 
     public static void main(String[] args) {
         /*
@@ -42,7 +55,7 @@ public class MainFile {
         */
 
         // print directory content with recursion
-        File directory = new File(".\\src\\");
+        File directory = new File(".\\");
         printFileList(directory);
 
     }

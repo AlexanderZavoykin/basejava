@@ -1,0 +1,25 @@
+package storage;
+
+import exception.StorageException;
+import model.Resume;
+
+import java.io.*;
+
+public class ObjectStreamSerializer implements StreamSerializer {
+
+    @Override
+    public void doWrite(Resume r, BufferedOutputStream bos) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(r);
+        }
+    }
+
+    @Override
+    public Resume doRead(BufferedInputStream is) throws IOException {
+        try (ObjectInputStream ois = new ObjectInputStream(is);) {
+            return (Resume) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new StorageException("Can not read file", null, e);
+        }
+    }
+}

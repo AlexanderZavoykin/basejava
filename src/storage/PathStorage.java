@@ -4,6 +4,8 @@ package storage;
 import exception.StorageException;
 import model.Resume;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,11 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
     private Path directory;
+    private StreamSerializer streamSerializer;
 
-    public AbstractPathStorage(String dir) {
+    public PathStorage(String dir, StreamSerializer streamSerializer) {
         directory = Paths.get(dir);
+        this.streamSerializer = streamSerializer;
         Objects.requireNonNull(directory, "Directory must not be null");
         if (!Files.isDirectory(directory)) {
             throw new IllegalArgumentException(dir + " is not a directory");
@@ -26,23 +30,15 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    protected abstract void doWrite(Resume resume, Path path) throws IOException;
-
-    protected abstract Resume doRead(Path path) throws IOException;
-
     @Override
     protected List<Resume> getList() {
         List<Resume> list = new ArrayList<>();
         try {
             Files.list(directory).forEach(path -> {
-                try {
-                    list.add(doRead(path));
-                } catch (IOException e) {
-                    throw new StorageException("Can not read file with path: ", path.toString(), e);
-                }
+                list.add(doGet(path));
             });
         } catch (IOException e) {
-            throw new StorageException("Path list creation error", null, e);
+            throw new StorageException("Can not get list of resumes", null, e);
         }
         return list;
     }
@@ -60,27 +56,27 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doSave(Resume resume, Path path) {
         try {
-            doWrite(resume, path);
+            streamSerializer.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Saving error", path.toString(), e);
+            throw new StorageException("Can not save file with this path", path.toString(), e);
         }
     }
 
     @Override
     protected void doUpdate(Resume resume, Path path) {
         try {
-            doWrite(resume, path);
+            streamSerializer.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Updating error", path.toString(), e);
+            throw new StorageException("Can not update file with this path", path.toString(), e);
         }
     }
 
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(path);
+            return streamSerializer.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Getting error", path.toString(), e);
+            throw new StorageException("Can not get file from this path", path.toString(), e);
         }
     }
 
@@ -89,7 +85,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Deleting error", path.toString(), e);
+            throw new StorageException("Can not delete file with this path", path.toString(), e);
         }
     }
 
@@ -98,7 +94,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
-            throw new StorageException("Can not delete with path:", directory.toString(), e);
+            throw new StorageException("Can not clear directory", directory.toString(), e);
         }
     }
 
