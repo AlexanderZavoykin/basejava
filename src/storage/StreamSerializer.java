@@ -2,12 +2,12 @@ package storage;
 
 import model.Resume;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public interface StreamSerializer {
-    void doWrite(Resume resume, BufferedOutputStream bos) throws IOException;
+    void doWrite(Resume resume, OutputStream os) throws IOException;
 
-    Resume doRead(BufferedInputStream bis) throws IOException;
+    Resume doRead(InputStream is) throws IOException;
 }

@@ -34,9 +34,7 @@ public class PathStorage extends AbstractStorage<Path> {
     protected List<Resume> getList() {
         List<Resume> list = new ArrayList<>();
         try {
-            Files.list(directory).forEach(path -> {
-                list.add(doGet(path));
-            });
+            Files.list(directory).forEach(path -> list.add(doGet(path)));
         } catch (IOException e) {
             throw new StorageException("Can not get list of resumes", null, e);
         }
