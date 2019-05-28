@@ -1,7 +1,8 @@
-package storage;
+package storage.serializer;
 
 import exception.StorageException;
 import model.Resume;
+import storage.StreamSerializer;
 
 import java.io.*;
 

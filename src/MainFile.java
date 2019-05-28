@@ -30,33 +30,26 @@ public class MainFile {
 
         // print directory content with recursion
         File directory = new File(".\\");
-        printFileList(directory);
+        printFileList(directory, "");
 
     }
 
-    private static void printFileList(File dir) {
+    private static void printFileList(File dir, String space) {
         File[] fileArray = dir.listFiles();
         if (fileArray != null) {
             for (File f : fileArray) {
                 if (f.isDirectory()) {
-                    addSpaces(f);
-                    System.out.println("Directory: " + f.getName());
-                    printFileList(f);
+                    System.out.println(space + f.getName() );
+                    printFileList(f, space + "\t");
                     System.out.println(); // to separate each folder`s file list
                 } else {
-                    addSpaces(f);
-                    System.out.println(f.getName());
+                    System.out.println(space + f.getName());
                 }
             }
         }
     }
 
-    private static void addSpaces(File f) {
-        int spaces = (int) f.getPath().chars().filter(ch -> ch == '\\').count();
-        for (int i = 0; i < spaces; i++) {
-            System.out.print("\t");
-        }
-    }
+
 
 }
 
