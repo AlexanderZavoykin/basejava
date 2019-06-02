@@ -241,7 +241,11 @@ public class ResumeTestData {
     public static void main(String[] args) {
         Resume resume = createTestResume("uuid", "Григорий Кислин");
         printTestResume(resume);
-        System.out.println("\n" + ContactType.valueOf("Позиция"));
+
+
+
+
+
     }
 
 }

@@ -1,5 +1,6 @@
 package storage.serializer;
 
+import exception.StorageException;
 import model.*;
 
 import java.io.*;
@@ -57,19 +58,25 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void doWriteTextSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
-        TextSection textSection = (TextSection) resume.getSection(sectionType);
-        dos.writeUTF(sectionType.getTitle());
-        String body = textSection.getBody();
-        if (!body.equals(null)) {
-            dos.writeInt(1);
-            dos.writeUTF(textSection.getBody());
-        } else {
-            dos.writeInt(0);
+    private static void doWriteTextSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
+        try {
+            TextSection textSection = (TextSection) resume.getSection(sectionType);
+            dos.writeUTF(sectionType.getTitle());
+            String body = textSection.getBody();
+            if (!body.equals(null)) {
+                dos.writeInt(1);
+                dos.writeUTF(body);
+            } else {
+                dos.writeInt(0);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new StorageException("Illegal section type as method argument", null, e);
         }
+
+
     }
 
-    private void doWriteListSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
+    private static void doWriteListSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
         ListSection listSection = (ListSection) resume.getSection(sectionType);
         dos.writeUTF(sectionType.getTitle());
         dos.writeInt(listSection.getSkills().size());
@@ -78,7 +85,7 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void doWriteOrgSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
+    private static void doWriteOrgSection(DataOutputStream dos, Resume resume, SectionType sectionType) throws IOException {
         OrganizationSection orgSection = (OrganizationSection) resume.getSection(sectionType);
         dos.writeUTF(sectionType.getTitle());
         dos.writeInt(orgSection.getOrganizations().size());
@@ -95,7 +102,7 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void doReadTextSection(DataInputStream dis, Resume resume) throws IOException {
+    private static void doReadTextSection(DataInputStream dis, Resume resume) throws IOException {
         String title = dis.readUTF();
         int check = dis.readInt();
         String body = null;
@@ -105,7 +112,7 @@ public class DataStreamSerializer implements StreamSerializer {
         resume.addSection(SectionType.getSectionType(title), new TextSection(body));
     }
 
-    private void doReadListSection(DataInputStream dis, Resume resume) throws IOException {
+    private static void doReadListSection(DataInputStream dis, Resume resume) throws IOException {
         String title = dis.readUTF();
         int size = dis.readInt();
         List<String> list = new LinkedList();
@@ -115,7 +122,7 @@ public class DataStreamSerializer implements StreamSerializer {
         resume.addSection(SectionType.getSectionType(title), new ListSection(list));
     }
 
-    private void doReadOrgSection(DataInputStream dis, Resume resume) throws IOException {
+    private static void doReadOrgSection(DataInputStream dis, Resume resume) throws IOException {
         String title = dis.readUTF();
         int orgSize = dis.readInt();
         List<Organization> orgList = new LinkedList();

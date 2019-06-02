@@ -23,7 +23,7 @@ public abstract class AbstractStorageTest {
     private final Resume RESUME_1 = ResumeTestData.createTestResume(UUID_1, "Mark Twain");
     private final Resume RESUME_2 = ResumeTestData.createTestResume(UUID_2, "Jorge Amado");
     private final Resume RESUME_3 = ResumeTestData.createTestResume(UUID_3, "Ernest Hemingway");
-    protected final Resume RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
+    protected final Resume RESUME_CHECK = ResumeTestData.createTestResume(UUID_CHECK, "Pancho Villa");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -57,7 +57,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = new Resume(UUID_1, "Emiliano Zapata");
+        Resume newResume = ResumeTestData.createTestResume(UUID_1, "Emiliano Zapata");
         storage.update(newResume);
         //doesn`t work with serialized resume
         //Assert.assertSame(newResume, storage.get(UUID_1));
