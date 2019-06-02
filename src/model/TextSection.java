@@ -1,9 +1,14 @@
 package model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 
+@XmlRootElement
 public class TextSection extends AbstractSection {
     private String body;
+
+    public TextSection() {
+    }
 
     public TextSection(String body) {
         Objects.requireNonNull(body, "Content must not be null");

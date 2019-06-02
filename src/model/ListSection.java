@@ -1,11 +1,17 @@
 package model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@XmlRootElement
 public class ListSection extends AbstractSection {
     private List<String> skills;
+
+    public ListSection(List<String> skills) {
+        this.skills = skills;
+    }
 
     public ListSection() {
         skills = new LinkedList<>();
@@ -20,6 +26,9 @@ public class ListSection extends AbstractSection {
         skills.remove(skill);
     }
 
+    public List<String> getSkills() {
+        return skills;
+    }
 
     @Override
     public boolean equals(Object o) {

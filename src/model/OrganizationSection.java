@@ -1,11 +1,20 @@
 package model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+@XmlRootElement
 public class OrganizationSection extends AbstractSection {
     private List<Organization> organizations = new LinkedList<>();
+
+    public OrganizationSection() {
+    }
+
+    public OrganizationSection(List<Organization> organizations) {
+        this.organizations = organizations;
+    }
 
     public void addOrganization(Organization o) {
         Objects.requireNonNull(o, "Content must not be null");
@@ -14,6 +23,10 @@ public class OrganizationSection extends AbstractSection {
 
     public void removeOrganization(Organization o) {
         organizations.remove(o);
+    }
+
+    public List<Organization> getOrganizations() {
+        return organizations;
     }
 
     @Override

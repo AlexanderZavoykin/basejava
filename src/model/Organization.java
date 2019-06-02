@@ -1,22 +1,30 @@
 package model;
 
+import util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private final static long serialVersionUID = 1L;
     private Link link;
     private List<Period> periods;
 
-    public Organization(Link link, Period period) {
+    public Organization() {
+    }
+
+    public Organization(Link link, List<Period> periods) {
         this.link = link;
-        periods = new LinkedList();
-        addPeriod(period);
+        this.periods = periods;
     }
 
     public Link getLink() {
@@ -35,6 +43,11 @@ public class Organization implements Serializable {
     public void removePeriod(Period period) {
         periods.remove(period);
     }
+
+    public List<Period> getPeriods() {
+        return periods;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -67,13 +80,19 @@ public class Organization implements Serializable {
     }
 
 
-    public static class Period implements Serializable{
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Period implements Serializable {
         private final static long serialVersionUID = 1L;
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth startDate;
+        @XmlJavaTypeAdapter(YearMonthAdapter.class)
         private YearMonth endDate;
         private String title;
         private String description;
-        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/uuuu");
+        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/uuuu");
+
+        public Period() {
+        }
 
         public Period(YearMonth startDate, YearMonth endDate, String title, String description) {
             Objects.requireNonNull(startDate, "Start date must not be null");

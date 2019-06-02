@@ -1,12 +1,17 @@
 package model;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlRootElement
 public class Link implements Serializable {
     private final static long serialVersionUID = 1L;
     private String name;
     private String url;
+
+    public Link() {
+    }
 
     public Link(String name, String url) {
         Objects.requireNonNull(name, "Organization`s name must not be null");
