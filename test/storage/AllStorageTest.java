@@ -2,7 +2,6 @@ package storage;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import storage.serializer.DataStreamSerializer;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ArrayStorageTest.class,
@@ -14,7 +13,7 @@ import storage.serializer.DataStreamSerializer;
         ObjectPathStorageTest.class,
         XmlPathStorageTest.class,
         JsonPathStorageTest.class,
-        DataStreamSerializer.class
+        DataPathStorageTest.class
 })
 public class AllStorageTest {
 }

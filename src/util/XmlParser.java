@@ -16,6 +16,7 @@ public class XmlParser {
             JAXBContext jaxbContext = JAXBContext.newInstance(classes);
             marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             unmarshaller = jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalStateException(e);

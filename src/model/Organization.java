@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,9 +23,14 @@ public class Organization implements Serializable {
     public Organization() {
     }
 
+
     public Organization(Link link, List<Period> periods) {
         this.link = link;
         this.periods = periods;
+    }
+
+    public Organization(Link link, Period... p) {
+        this(link, Arrays.asList(p));
     }
 
     public Link getLink() {

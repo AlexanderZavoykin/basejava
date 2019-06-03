@@ -1,6 +1,7 @@
 package model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -9,13 +10,19 @@ import java.util.Objects;
 public class ListSection extends AbstractSection {
     private List<String> skills;
 
+    public ListSection() {
+        skills = new LinkedList<>();
+    }
+
+    public ListSection(String... s) {
+        this(Arrays.asList(s));
+    }
+
     public ListSection(List<String> skills) {
         this.skills = skills;
     }
 
-    public ListSection() {
-        skills = new LinkedList<>();
-    }
+
 
     public void addSkill(String skill) {
         Objects.requireNonNull(skill, "Content must not be null");

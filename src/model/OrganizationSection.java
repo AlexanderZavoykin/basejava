@@ -12,6 +12,12 @@ public class OrganizationSection extends AbstractSection {
     public OrganizationSection() {
     }
 
+    public OrganizationSection(Organization... o) {
+        for (int i = 0; i < o.length; i++) {
+            organizations.add(o[i]);
+        }
+    }
+
     public OrganizationSection(List<Organization> organizations) {
         this.organizations = organizations;
     }

@@ -2,12 +2,13 @@ package storage;
 
 import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
-import model.Resume;
+import model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,14 +17,51 @@ public abstract class AbstractStorageTest {
     protected final static File STORAGE_DIRECTORY = new File(STORAGE_STRING_PATH);
 
     protected Storage storage;
-    private final String UUID_1 = "uuid_1";
-    private final String UUID_2 = "uuid_2";
-    private final String UUID_3 = "uuid_3";
-    private final String UUID_CHECK = "uuid_check";
-    private final Resume RESUME_1 = ResumeTestData.createTestResume(UUID_1, "Mark Twain");
-    private final Resume RESUME_2 = ResumeTestData.createTestResume(UUID_2, "Jorge Amado");
-    private final Resume RESUME_3 = ResumeTestData.createTestResume(UUID_3, "Ernest Hemingway");
-    protected final Resume RESUME_CHECK = ResumeTestData.createTestResume(UUID_CHECK, "Pancho Villa");
+    private static final String UUID_1 = "uuid_1";
+    private static final String UUID_2 = "uuid_2";
+    private static final String UUID_3 = "uuid_3";
+    private static final String UUID_CHECK = "uuid_check";
+    private static final Resume RESUME_1;
+    private static final Resume RESUME_2;
+    private static final Resume RESUME_3;
+    protected static final Resume RESUME_CHECK;
+
+    static {
+        RESUME_1 = new Resume(UUID_1, "Mark Twain");
+        RESUME_2 = new Resume(UUID_2, "Jorge Amado");
+        RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
+        RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
+
+        RESUME_1.addContact(ContactType.EMAIL, "marktwain@gmail.com");
+        RESUME_1.addContact(ContactType.SKYPE, "marktwain");
+        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal_1"));
+        RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective_1"));
+        RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achiev_11", "Achiev_12", "Achiev_13"));
+        RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qual_11", "Qual_12"));
+        RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization(new Link("Company_11", "company_11_URL"),
+                new Organization.Period(YearMonth.of(1990, 01), YearMonth.of(1992, 06),
+                        "Exp_11", "Descr_11"),
+                new Organization.Period(YearMonth.of(1990, 01), YearMonth.of(1992, 06),
+                        "Exp_12", "Descr_12"))));
+        RESUME_1.addSection(SectionType.EDUCATION, new OrganizationSection(
+                new Organization(new Link("University_1", "university_1_URL"),
+                        new Organization.Period(YearMonth.of(1982, 01), YearMonth.of(1985, 01),
+                                "Exp_13", "Descr_13"),
+                        new Organization.Period(YearMonth.of(1985, 02), YearMonth.of(1989, 12),
+                                "Exp_13", "Descr_14"))));
+
+        RESUME_2.addContact(ContactType.EMAIL, "jorgeamado@gmail.com");
+        RESUME_2.addContact(ContactType.SKYPE, "jorgeamado");
+        RESUME_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization(new Link("Company_1", null),
+                        new Organization.Period(YearMonth.of(2000, 01), YearMonth.of(2002, 01),
+                                "Exp_21", "Descr_21"),
+                        new Organization.Period(YearMonth.of(2005, 01), YearMonth.of(2008, 01),
+                                "Exp_23", null))));
+
+    }
+
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -57,7 +95,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = ResumeTestData.createTestResume(UUID_1, "Emiliano Zapata");
+        Resume newResume = new Resume(UUID_1, "Emiliano Zapata");
         storage.update(newResume);
         //doesn`t work with serialized resume
         //Assert.assertSame(newResume, storage.get(UUID_1));
