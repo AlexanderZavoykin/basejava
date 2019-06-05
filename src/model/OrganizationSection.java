@@ -1,6 +1,8 @@
 package model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -59,4 +61,13 @@ public class OrganizationSection extends AbstractSection {
         }
         return result.toString();
     }
+
+    private static void writeStringOrSpace(DataOutputStream dos, String s) throws IOException {
+        if (s != null) {
+            dos.writeUTF(s);
+        } else {
+            dos.writeUTF("");
+        }
+    }
+
 }

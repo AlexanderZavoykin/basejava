@@ -6,7 +6,6 @@ import java.io.*;
 import java.time.YearMonth;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -17,32 +16,28 @@ public class DataStreamSerializer implements StreamSerializer {
 
             // writing contacts
             dos.writeInt(resume.getContacts().size());
-            for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            resume.getContacts().entrySet().stream().forEach((entry) -> {
+                try {
+                    dos.writeUTF(entry.getKey().name());
+                    dos.writeUTF(entry.getValue());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
             // writing sections
             dos.writeInt(resume.getSections().size());
-            for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()) {
-                String sectionName = entry.getKey().name();
-                dos.writeUTF(sectionName);
-                switch (sectionName) {
-                    case "PERSONAL":
-                    case "OBJECTIVE":
-                        doWriteTextSection(dos, (TextSection) entry.getValue());
-                        break;
-                    case "ACHIEVEMENT":
-                    case "QUALIFICATION":
-                        doWriteListSection(dos, (ListSection) entry.getValue());
-                        break;
-                    case "EXPERIENCE":
-                    case "EDUCATION":
-                        doWriteOrgSection(dos, (OrganizationSection) entry.getValue());
-                        break;
-                }
-            }
+            resume.getSections().entrySet().stream().forEach((entry) -> {
+                        String sectionName = entry.getKey().name();
+                        try {
+                            doWriteSection(dos, sectionName, entry.getValue());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
         }
+
     }
 
     @Override
@@ -85,24 +80,39 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private static void doWriteTextSection(DataOutputStream dos, TextSection textSection) throws IOException {
-        dos.writeUTF(textSection.getBody());
+    private void doWriteSection(DataOutputStream dos, String sectionName, AbstractSection section) throws IOException {
+        dos.writeUTF(sectionName);
+        switch (sectionName) {
+            case "PERSONAL":
+            case "OBJECTIVE":
+                dos.writeUTF(((TextSection) section).getBody());
+                break;
+            case "ACHIEVEMENT":
+            case "QUALIFICATION":
+                doWriteListSection(dos, (ListSection) section);
+                break;
+            case "EXPERIENCE":
+            case "EDUCATION":
+                doWriteOrgSection(dos, (OrganizationSection) section);
+                break;
+        }
     }
 
-    private static void doWriteListSection(DataOutputStream dos, ListSection listSection) throws IOException {
+
+    public void doWriteListSection(DataOutputStream dos, ListSection listSection) throws IOException {
         dos.writeInt(listSection.getSkills().size());
         for (String skill : listSection.getSkills()) {
             dos.writeUTF(skill);
         }
     }
 
-    private static void doWriteOrgSection(DataOutputStream dos, OrganizationSection orgSection) throws IOException {
+    public void doWriteOrgSection(DataOutputStream dos, OrganizationSection orgSection) throws IOException {
         dos.writeInt(orgSection.getOrganizations().size());
         for (Organization organization : orgSection.getOrganizations()) {
             dos.writeUTF(organization.getLink().getName());
 
             String url = organization.getLink().getUrl();
-            writeStringOrNull(dos, url);
+            writeStringOrSpace(dos, url);
 
             dos.writeInt(organization.getPeriods().size());
             for (Organization.Period period : organization.getPeriods()) {
@@ -111,16 +121,16 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(period.getTitle());
 
                 String description = period.getDescription();
-                writeStringOrNull(dos, description);
+                writeStringOrSpace(dos, description);
             }
         }
     }
 
-    private static void writeStringOrNull(DataOutputStream dos, String url) throws IOException {
+    private static void writeStringOrSpace(DataOutputStream dos, String url) throws IOException {
         if (url != null) {
             dos.writeUTF(url);
         } else {
-            dos.writeUTF("null");
+            dos.writeUTF("");
         }
     }
 
@@ -145,7 +155,7 @@ public class DataStreamSerializer implements StreamSerializer {
         for (int i = 0; i < orgSize; i++) {
             String name = dis.readUTF();
             String url = dis.readUTF();
-            if (url.equals("null")) {
+            if (url.equals("")) {
                 url = null;
             }
             Organization org = new Organization(new Link(name, url), new LinkedList<Organization.Period>());
@@ -155,7 +165,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 String endDate = dis.readUTF();
                 String title = dis.readUTF();
                 String description = dis.readUTF();
-                if (description.equals("null")) {
+                if (description.equals("")) {
                     description = null;
                 }
                 org.addPeriod(new Organization.Period(YearMonth.parse(startDate),
