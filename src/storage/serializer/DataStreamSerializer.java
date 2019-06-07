@@ -4,10 +4,20 @@ import model.*;
 
 import java.io.*;
 import java.time.YearMonth;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DataStreamSerializer implements StreamSerializer {
+
+    interface DataWriter<T> {
+        void write(T t) throws IOException;
+    }
+
+    interface DataWalker {
+        void walk() throws IOException;
+    }
+
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -15,30 +25,65 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getFullName());
 
             // writing contacts
-            dos.writeInt(resume.getContacts().size());
-            resume.getContacts().entrySet().stream().forEach((entry) -> {
-                try {
-                    dos.writeUTF(entry.getKey().name());
-                    dos.writeUTF(entry.getValue());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            doWriteCollection(dos, resume.getContacts().entrySet(), entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
             });
 
             // writing sections
-            dos.writeInt(resume.getSections().size());
-            resume.getSections().entrySet().stream().forEach((entry) -> {
+            doWriteCollection(dos, resume.getSections().entrySet(),
+                    entry -> {
                         String sectionName = entry.getKey().name();
-                        try {
-                            doWriteSection(dos, sectionName, entry.getValue());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-            );
-        }
+                        dos.writeUTF(sectionName);
+                        switch (sectionName) {
+                            case "PERSONAL":
+                            case "OBJECTIVE":
+                                dos.writeUTF(((TextSection) entry.getValue()).getBody());
+                                break;
+                            case "ACHIEVEMENT":
+                            case "QUALIFICATION":
+                                doWriteCollection(dos, ((ListSection) entry.getValue()).getSkills(),
+                                        skill -> {
+                                            dos.writeUTF(skill);
+                                        });
+                                break;
+                            case "EXPERIENCE":
+                            case "EDUCATION":
+                                doWriteCollection(dos, ((OrganizationSection) entry.getValue()).getOrganizations(),
+                                        organization -> {
+                                            String url = organization.getLink().getUrl();
+                                            writeEmptyString(dos, url);
+                                            doWriteCollection(dos, organization.getPeriods(),
+                                                    period -> {
+                                                        dos.writeUTF(period.getStartDate().toString());
+                                                        dos.writeUTF(period.getEndDate().toString());
+                                                        dos.writeUTF(period.getTitle());
 
+                                                        String description = period.getDescription();
+                                                        writeEmptyString(dos, description);
+                                                    });
+                                        });
+                                break;
+                        }
+                    });
+        }
     }
+
+    private <T> void doWriteCollection(DataOutputStream dos, Collection<T> collection, DataWriter<T> dataWriter) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            dataWriter.write(t);
+        }
+    }
+
+    private static void writeEmptyString(DataOutputStream dos, String s) throws IOException {
+        if (s != null) {
+            dos.writeUTF(s);
+        } else {
+            dos.writeUTF("");
+        }
+    }
+
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
@@ -48,134 +93,78 @@ public class DataStreamSerializer implements StreamSerializer {
             Resume resume = new Resume(uuid, fullName);
 
             // reading contacts
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            walk(dis, () -> {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
+            });
 
-            // reading sections
-            int sectionNum = dis.readInt();
-            for (int i = 0; i < sectionNum; i++) {
+            //reading sections
+            walk(dis, () -> {
                 String sectionName = dis.readUTF();
                 switch (sectionName) {
                     case "PERSONAL":
                     case "OBJECTIVE":
-                        doReadTextSection(dis, resume, sectionName);
+                        resume.addSection(SectionType.valueOf(sectionName), new TextSection(dis.readUTF()));
                         break;
                     case "ACHIEVEMENT":
                     case "QUALIFICATION":
-                        doReadListSection(dis, resume, sectionName);
-                        break;
+                        List<String> skillList = new LinkedList<>();
+
+                        // start of walking through skills
+                        walk(dis, () -> {
+                            skillList.add(dis.readUTF());
+                        }); // end of walking through skills
+
+                        resume.addSection(SectionType.valueOf(sectionName), new ListSection(skillList));
                     case "EXPERIENCE":
                     case "EDUCATION":
-                        doReadOrgSection(dis, resume, sectionName);
-                        break;
-                }
+                        List<Organization> orgList = new LinkedList<>();
 
+                        // start of walking through organizations
+                        walk(dis, () -> {
+                            String orgName = dis.readUTF();
+                            String orgUrl = dis.readUTF();
+                            if (orgUrl.equals("")) {
+                                orgUrl = null;
+                            }
+                            List<Organization.Period> periods = new LinkedList<>();
 
-            }
+                            // start of walking through periods
+                            walk(dis, () -> {
+                                String startDate = dis.readUTF();
+                                String endDate = dis.readUTF();
+                                String title = dis.readUTF();
+                                String description = dis.readUTF();
+                                Organization.Period period = new Organization.Period(YearMonth.parse(startDate),
+                                        YearMonth.parse(endDate),
+                                        title,
+                                        description);
+                                periods.add(period);
+                            }); //end of walking through periods
 
+                            Organization organization = new Organization((new Link(orgName, orgUrl)),
+                                    periods);
 
+                        });  //end of walking through organizations
+
+                        resume.addSection(SectionType.valueOf(sectionName), new OrganizationSection(orgList));
+                }  // end of switch statement
+
+            });  //end of walking sections cycle
+            
             return resume;
         }
     }
 
-    private void doWriteSection(DataOutputStream dos, String sectionName, AbstractSection section) throws IOException {
-        dos.writeUTF(sectionName);
-        switch (sectionName) {
-            case "PERSONAL":
-            case "OBJECTIVE":
-                dos.writeUTF(((TextSection) section).getBody());
-                break;
-            case "ACHIEVEMENT":
-            case "QUALIFICATION":
-                doWriteListSection(dos, (ListSection) section);
-                break;
-            case "EXPERIENCE":
-            case "EDUCATION":
-                doWriteOrgSection(dos, (OrganizationSection) section);
-                break;
-        }
-    }
 
-
-    public void doWriteListSection(DataOutputStream dos, ListSection listSection) throws IOException {
-        dos.writeInt(listSection.getSkills().size());
-        for (String skill : listSection.getSkills()) {
-            dos.writeUTF(skill);
-        }
-    }
-
-    public void doWriteOrgSection(DataOutputStream dos, OrganizationSection orgSection) throws IOException {
-        dos.writeInt(orgSection.getOrganizations().size());
-        for (Organization organization : orgSection.getOrganizations()) {
-            dos.writeUTF(organization.getLink().getName());
-
-            String url = organization.getLink().getUrl();
-            writeStringOrSpace(dos, url);
-
-            dos.writeInt(organization.getPeriods().size());
-            for (Organization.Period period : organization.getPeriods()) {
-                dos.writeUTF(period.getStartDate().toString());
-                dos.writeUTF(period.getEndDate().toString());
-                dos.writeUTF(period.getTitle());
-
-                String description = period.getDescription();
-                writeStringOrSpace(dos, description);
-            }
-        }
-    }
-
-    private static void writeStringOrSpace(DataOutputStream dos, String url) throws IOException {
-        if (url != null) {
-            dos.writeUTF(url);
-        } else {
-            dos.writeUTF("");
-        }
-    }
-
-
-    private static void doReadTextSection(DataInputStream dis, Resume resume, String sectionName) throws IOException {
-        String body = dis.readUTF();
-        resume.addSection(SectionType.valueOf(sectionName), new TextSection(body));
-    }
-
-    private static void doReadListSection(DataInputStream dis, Resume resume, String sectionName) throws IOException {
+    private void walk(DataInputStream dis, DataWalker dataWalker) throws IOException {
         int size = dis.readInt();
-        List<String> list = new LinkedList<>();
         for (int i = 0; i < size; i++) {
-            list.add(dis.readUTF());
+            dataWalker.walk();
         }
-        resume.addSection(SectionType.valueOf(sectionName), new ListSection(list));
+
     }
 
-    private static void doReadOrgSection(DataInputStream dis, Resume resume, String sectionName) throws IOException {
-        int orgSize = dis.readInt();
-        List<Organization> orgList = new LinkedList<>();
-        for (int i = 0; i < orgSize; i++) {
-            String name = dis.readUTF();
-            String url = dis.readUTF();
-            if (url.equals("")) {
-                url = null;
-            }
-            Organization org = new Organization(new Link(name, url), new LinkedList<Organization.Period>());
-            int perSize = dis.readInt();
-            for (int j = 0; j < perSize; j++) {
-                String startDate = dis.readUTF();
-                String endDate = dis.readUTF();
-                String title = dis.readUTF();
-                String description = dis.readUTF();
-                if (description.equals("")) {
-                    description = null;
-                }
-                org.addPeriod(new Organization.Period(YearMonth.parse(startDate),
-                        YearMonth.parse(endDate),
-                        title,
-                        description));
-            }
-            orgList.add(org);
-        }
-        resume.addSection(SectionType.valueOf(sectionName), new OrganizationSection(orgList));
-    }
 
 }
+
+
