@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,5 +19,14 @@ public class MainDate {
         LocalTime lt = LocalTime.now();
         LocalDateTime ldt = LocalDateTime.of(ld, lt);
         System.out.println(ldt);
+
+
+        YearMonth ym = YearMonth.of(2010, 10);
+        System.out.println(ym.toString());
+
+        YearMonth ymp = YearMonth.parse("2010-10");
+        System.out.println(ymp.toString());
+
+
     }
 }

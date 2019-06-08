@@ -14,8 +14,12 @@ public class DataStreamSerializer implements StreamSerializer {
         void write(T t) throws IOException;
     }
 
-    interface DataWalker {
-        void walk() throws IOException;
+    interface DataHandler {
+        void handle() throws IOException;
+    }
+
+    interface DataReader {
+        void read() throws IOException;
     }
 
     @Override
@@ -51,6 +55,7 @@ public class DataStreamSerializer implements StreamSerializer {
                             case "EDUCATION":
                                 doWriteCollection(dos, ((OrganizationSection) entry.getValue()).getOrganizations(),
                                         organization -> {
+                                            dos.writeUTF(organization.getLink().getName());
                                             String url = organization.getLink().getUrl();
                                             writeEmptyString(dos, url);
                                             doWriteCollection(dos, organization.getPeriods(),
@@ -68,7 +73,7 @@ public class DataStreamSerializer implements StreamSerializer {
                     });
         }
     }
-
+    
     private <T> void doWriteCollection(DataOutputStream dos, Collection<T> collection, DataWriter<T> dataWriter) throws IOException {
         dos.writeInt(collection.size());
         for (T t : collection) {
@@ -84,7 +89,6 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
@@ -94,27 +98,33 @@ public class DataStreamSerializer implements StreamSerializer {
 
             // reading contacts
             walk(dis, () -> {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
+                String contactType = dis.readUTF();
+                String contactBody = dis.readUTF();
+                resume.addContact(ContactType.valueOf(contactType), contactBody);
             });
 
             //reading sections
+            // start of walking through sections
             walk(dis, () -> {
                 String sectionName = dis.readUTF();
                 switch (sectionName) {
                     case "PERSONAL":
                     case "OBJECTIVE":
-                        resume.addSection(SectionType.valueOf(sectionName), new TextSection(dis.readUTF()));
+                        String body = dis.readUTF();
+                        resume.addSection(SectionType.valueOf(sectionName), new TextSection(body));
                         break;
+
                     case "ACHIEVEMENT":
                     case "QUALIFICATION":
                         List<String> skillList = new LinkedList<>();
 
                         // start of walking through skills
                         walk(dis, () -> {
-                            skillList.add(dis.readUTF());
+                            String skill = dis.readUTF();
+                            skillList.add(skill);
                         }); // end of walking through skills
-
                         resume.addSection(SectionType.valueOf(sectionName), new ListSection(skillList));
+                        break;
                     case "EXPERIENCE":
                     case "EDUCATION":
                         List<Organization> orgList = new LinkedList<>();
@@ -126,6 +136,7 @@ public class DataStreamSerializer implements StreamSerializer {
                             if (orgUrl.equals("")) {
                                 orgUrl = null;
                             }
+
                             List<Organization.Period> periods = new LinkedList<>();
 
                             // start of walking through periods
@@ -134,34 +145,42 @@ public class DataStreamSerializer implements StreamSerializer {
                                 String endDate = dis.readUTF();
                                 String title = dis.readUTF();
                                 String description = dis.readUTF();
-                                Organization.Period period = new Organization.Period(YearMonth.parse(startDate),
+
+                                //System.out.println(startDate);
+                                //System.out.println(endDate);
+                                //System.out.println(title);
+                                //System.out.println(description);
+
+                                if (description.equals("")) {
+                                    description = null;
+                                }
+                                periods.add(new Organization.Period(YearMonth.parse(startDate),
                                         YearMonth.parse(endDate),
                                         title,
-                                        description);
-                                periods.add(period);
+                                        description));
                             }); //end of walking through periods
 
                             Organization organization = new Organization((new Link(orgName, orgUrl)),
                                     periods);
+                            orgList.add(organization);
 
                         });  //end of walking through organizations
 
                         resume.addSection(SectionType.valueOf(sectionName), new OrganizationSection(orgList));
+                        break;
                 }  // end of switch statement
 
             });  //end of walking sections cycle
-            
             return resume;
         }
     }
 
-
-    private void walk(DataInputStream dis, DataWalker dataWalker) throws IOException {
+    private void walk(DataInputStream dis, DataHandler dataHandler) throws IOException {
         int size = dis.readInt();
+        //System.out.println(size);
         for (int i = 0; i < size; i++) {
-            dataWalker.walk();
+            dataHandler.handle();
         }
-
     }
 
 

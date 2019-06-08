@@ -32,34 +32,33 @@ public abstract class AbstractStorageTest {
         RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
         RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
 
-        RESUME_1.addContact(ContactType.EMAIL, "marktwain@gmail.com");
-        RESUME_1.addContact(ContactType.SKYPE, "marktwain");
-        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal_1"));
-        RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective_1"));
-        RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achiev_11", "Achiev_12", "Achiev_13"));
-        RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qual_11", "Qual_12"));
+        RESUME_1.addContact(ContactType.EMAIL, "resume@gmail.com");
+        RESUME_1.addContact(ContactType.SKYPE, "resume_skype");
+        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
+        RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective"));
+        RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement_1", "Achievement_2", "Achievement_3"));
+        RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qualification_1", "Qualification_2"));
         RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
-                new Organization(new Link("Company_11", "company_11_URL"),
+                new Organization(new Link("CompanyName", "CompanyURL"),
                 new Organization.Period(YearMonth.of(1990, 01), YearMonth.of(1992, 06),
-                        "Exp_11", "Descr_11"),
+                        "Title", "Description"),
                 new Organization.Period(YearMonth.of(1990, 01), YearMonth.of(1992, 06),
-                        "Exp_12", "Descr_12"))));
+                        "Title", "Description"))));
         RESUME_1.addSection(SectionType.EDUCATION, new OrganizationSection(
-                new Organization(new Link("University_1", "university_1_URL"),
+                new Organization(new Link("University", null),
                         new Organization.Period(YearMonth.of(1982, 01), YearMonth.of(1985, 01),
-                                "Exp_13", "Descr_13"),
+                                "Title", null),
                         new Organization.Period(YearMonth.of(1985, 02), YearMonth.of(1989, 12),
-                                "Exp_13", "Descr_14"))));
+                                "Title", "Description"))));
 
-        RESUME_2.addContact(ContactType.EMAIL, "jorgeamado@gmail.com");
-        RESUME_2.addContact(ContactType.SKYPE, "jorgeamado");
+        RESUME_2.addContact(ContactType.EMAIL, "resume@gmail.com");
+        RESUME_2.addContact(ContactType.SKYPE, "resume_skype");
         RESUME_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
-                new Organization(new Link("Company_1", null),
+                new Organization(new Link("Company", null),
                         new Organization.Period(YearMonth.of(2000, 01), YearMonth.of(2002, 01),
-                                "Exp_21", "Descr_21"),
+                                "Title", null),
                         new Organization.Period(YearMonth.of(2005, 01), YearMonth.of(2008, 01),
-                                "Exp_23", null))));
-
+                                "Title", "Description"))));
     }
 
 
