@@ -81,12 +81,18 @@ public class MainConcurrency {
         }
 
         synchronized void sayHello(Person person) {
-            System.out.println(name + " says hello to " + person.getName());
+            //System.out.println(name + " says hello to " + person.getName());
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             person.sayHi(this);
         }
 
         synchronized void sayHi(Person person) {
-            System.out.println(name + " says hi to " + person.getName());
+            this.notify();
+            //System.out.println(name + " says hi to " + person.getName());
         }
     }
 
