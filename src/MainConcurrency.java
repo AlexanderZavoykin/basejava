@@ -83,7 +83,7 @@ public class MainConcurrency {
         synchronized void sayHello(Person person) {
             //System.out.println(name + " says hello to " + person.getName());
             try {
-                this.wait();
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -91,7 +91,6 @@ public class MainConcurrency {
         }
 
         synchronized void sayHi(Person person) {
-            this.notify();
             //System.out.println(name + " says hi to " + person.getName());
         }
     }
