@@ -3,6 +3,7 @@ package storage;
 import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
 import model.*;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
-    protected final static String STORAGE_STRING_PATH = "E:\\JAVA\\basejava\\storage";
-    protected final static File STORAGE_DIRECTORY = new File(STORAGE_STRING_PATH);
+    protected static final String STORAGE_STRING_PATH = "E:\\JAVA\\basejava\\storage";
+    protected static final File STORAGE_DIRECTORY = 
+            //new File(STORAGE_STRING_PATH);
 
     protected Storage storage;
     private static final String UUID_1 = "uuid_1";
