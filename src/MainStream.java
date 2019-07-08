@@ -1,34 +1,42 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MainStream {
 
     private static int minValue(int[] values) {
-        AtomicInteger ai = new AtomicInteger(0);
         return Arrays.stream(values).distinct()
-                .map(x -> -x)  // the trick to sort in reversed order
                 .sorted()
-                .map(x -> -x * ((int) Math.pow(10, ai.getAndIncrement())))
-                .reduce(0, Integer::sum);
+                .reduce(0, (x, y) -> x * 10 + y);
     }
 
-    private static List<Integer> oddOrEven(List<Integer> integers) {
+    /*private static List<Integer> oddOrEven(List<Integer> integers) {
         int sum = integers.stream()
                 .reduce(0, Integer::sum);
         return integers.stream()
                 .filter(x -> (x + sum) % 2 != 0)
                 .collect(Collectors.toList());
+    }*/
+
+    private static List<Integer> oddOrEven(List<Integer> integers) {
+        AtomicInteger sum = new AtomicInteger(0);
+        Map<Boolean, List<Integer>> map = integers.stream()
+                .peek(x -> sum.getAndAdd(x))
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0));
+        Boolean isOdd = (sum.get() % 2 != 0);
+        return map.get(isOdd);
     }
-    
+
+
     public static void main(String[] args) {
         System.out.println(minValue(new int[]{1, 2, 3, 3, 2, 3}));
         System.out.println(minValue(new int[]{9, 8}));
 
         List<Integer> list = new ArrayList<>();
-        list.add(4);
+        list.add(6);
         list.add(8);
         list.add(10);
         list.add(2);
