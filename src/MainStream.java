@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MainStream {
 
     private static int minValue(int[] values) {
-        return Arrays.stream(values).distinct()
+        return Arrays.stream(values)
+                .distinct()
                 .sorted()
                 .reduce(0, (x, y) -> x * 10 + y);
     }
@@ -23,11 +23,10 @@ public class MainStream {
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         AtomicInteger sum = new AtomicInteger(0);
-        Map<Boolean, List<Integer>> map = integers.stream()
-                .peek(x -> sum.getAndAdd(x))
-                .collect(Collectors.partitioningBy(x -> x % 2 == 0));
-        Boolean isOdd = (sum.get() % 2 != 0);
-        return map.get(isOdd);
+        return integers.stream()
+                .peek(sum::getAndAdd)
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0))
+                .get(sum.get() % 2 != 0);
     }
 
 
