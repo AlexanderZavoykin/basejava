@@ -1,6 +1,4 @@
-package storage;
-
-import static org.junit.Assert.*;
+import storage.ResumeMapStorage;
 
 public class ResumeMapStorageTest extends AbstractStorageTest {
     public ResumeMapStorageTest() {

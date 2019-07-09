@@ -1,9 +1,9 @@
-package storage;
-
 import exception.StorageException;
 import model.Resume;
 import org.junit.Assert;
 import org.junit.Test;
+import storage.AbstractArrayStorage;
+import storage.Storage;
 
 public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
 

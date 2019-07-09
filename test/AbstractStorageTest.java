@@ -1,21 +1,18 @@
-package storage;
-
 import exception.ResumeAlreadyExistsStorageException;
 import exception.ResumeDoesNotExistStorageException;
-import model.*;
-
+import model.Resume;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import storage.Storage;
 
 import java.io.File;
-import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
     protected static final String STORAGE_STRING_PATH = "E:\\JAVA\\basejava\\storage";
-    protected static final File STORAGE_DIRECTORY = 
+    protected static final File STORAGE_DIRECTORY = Config.getInstance().getStorageDir();
             //new File(STORAGE_STRING_PATH);
 
     protected Storage storage;
@@ -34,7 +31,7 @@ public abstract class AbstractStorageTest {
         RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
         RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
 
-        RESUME_1.addContact(ContactType.EMAIL, "resume@gmail.com");
+        /*RESUME_1.addContact(ContactType.EMAIL, "resume@gmail.com");
         RESUME_1.addContact(ContactType.SKYPE, "resume_skype");
         RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
         RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective"));
@@ -60,7 +57,7 @@ public abstract class AbstractStorageTest {
                         new Organization.Period(YearMonth.of(2000, 01), YearMonth.of(2002, 01),
                                 "Title", null),
                         new Organization.Period(YearMonth.of(2005, 01), YearMonth.of(2008, 01),
-                                "Title", "Description"))));
+                                "Title", "Description"))));*/
     }
 
 
