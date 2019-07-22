@@ -1,10 +1,8 @@
 package com.gmail.aazavoykin.storage;
 
-import com.gmail.aazavoykin.exception.ResumeAlreadyExistsStorageException;
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
 import com.gmail.aazavoykin.model.Resume;
 import com.gmail.aazavoykin.util.SqlHelper;
-import org.postgresql.util.PSQLException;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -35,15 +33,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute(query, (ps) -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
-            try {
-                ps.execute();
-            } catch (PSQLException e) {
-                // https://www.postgresql.org/docs/9.4/errcodes-appendix.html
-                // 23505 unique_violation
-                if (e.getSQLState().equals("23505")) {
-                    throw new ResumeAlreadyExistsStorageException(r.getUuid());
-                }
-            }
+            ps.execute();
             return null;
         });
     }
