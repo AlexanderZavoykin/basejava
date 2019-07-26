@@ -1,9 +1,6 @@
-package com.gmail.aazavoykin.util;
+package com.gmail.aazavoykin.sql;
 
-import com.gmail.aazavoykin.exception.ResumeAlreadyExistsStorageException;
 import com.gmail.aazavoykin.exception.StorageException;
-import com.gmail.aazavoykin.sql.ConnectionFactory;
-import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,26 +13,37 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    public interface Operation<T> {
+    public interface SqlOperation<T> {
         T operate(PreparedStatement ps) throws SQLException;
     }
 
-    public <T> T execute(String query, Operation<T> operation) {
+    public interface SqlTransaction<T> {
+        T transact(Connection connection) throws SQLException;
+    }
+
+    public <T> T execute(String query, SqlOperation<T> sqlOperation) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            return operation.operate(ps);
-        } catch (PSQLException e) {
-            // https://www.postgresql.org/docs/9.4/errcodes-appendix.html
-            // 23505 unique_violation
-            if (e.getSQLState().equals("23505")) {
-                throw new ResumeAlreadyExistsStorageException(null);
-            } else {
-                throw new StorageException("PSQL exception " + e.getSQLState(), null);
-            }
-
+            return sqlOperation.operate(ps);
         } catch (SQLException e) {
-            throw new StorageException("SQL connection problem", null, e);
-
+            throw ExceptionUtil.convertException(e);
         }
     }
+
+    public <T> T transactionalExecute(SqlTransaction<T> sqlTransaction) {
+        try (Connection conn = connectionFactory.getConnection()) {
+            try {
+                conn.setAutoCommit(false);
+                T result = sqlTransaction.transact(conn);
+                conn.commit();
+                return result;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw ExceptionUtil.convertException(e);
+            }
+        } catch (SQLException e) {
+            throw new StorageException(e);
+        }
+    }
+
 }
