@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractStorageTest {
     protected static final int STORAGE_SIZE = 1000;
@@ -102,7 +103,11 @@ public abstract class AbstractStorageTest {
         storage.update(newResume);
         //doesn`t work with serialized resume
         //Assert.assertSame(newResume, storage.get(UUID_1));
+        for (Map.Entry<ContactType, String> e : newResume.getContacts().entrySet()) {
+            System.out.println(e.getKey().toString() + "-" + e.getValue());
+        }
         Assert.assertEquals(newResume, storage.get(UUID_1));
+
     }
 
     @Test(expected = ResumeDoesNotExistStorageException.class)
