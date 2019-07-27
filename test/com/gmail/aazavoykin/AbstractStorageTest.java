@@ -2,6 +2,7 @@ package com.gmail.aazavoykin;
 
 import com.gmail.aazavoykin.exception.ResumeAlreadyExistsStorageException;
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
+import com.gmail.aazavoykin.model.ContactType;
 import com.gmail.aazavoykin.model.Resume;
 import com.gmail.aazavoykin.storage.Storage;
 import org.junit.Assert;
@@ -9,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,9 +36,9 @@ public abstract class AbstractStorageTest {
         RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
         RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
 
-        /*RESUME_1.addContact(ContactType.EMAIL, "resume@gmail.com");
-        RESUME_1.addContact(ContactType.SKYPE, "resume_skype");
-        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
+        RESUME_1.addContact(ContactType.EMAIL, "resume_1@gmail.com");
+        RESUME_1.addContact(ContactType.SKYPE, "resume_1_skype");
+        /*RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
         RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective"));
         RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement_1", "Achievement_2", "Achievement_3"));
         RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qualification_1", "Qualification_2"));
@@ -51,11 +53,11 @@ public abstract class AbstractStorageTest {
                         new Organization.Period(YearMonth.of(1982, 01), YearMonth.of(1985, 01),
                                 "Title", null),
                         new Organization.Period(YearMonth.of(1985, 02), YearMonth.of(1989, 12),
-                                "Title", "Description"))));
+                                "Title", "Description"))));*/
 
-        RESUME_2.addContact(ContactType.EMAIL, "resume@gmail.com");
-        RESUME_2.addContact(ContactType.SKYPE, "resume_skype");
-        RESUME_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+        RESUME_2.addContact(ContactType.EMAIL, "resume_2@gmail.com");
+        RESUME_2.addContact(ContactType.SKYPE, "resume_2_skype");
+        /*RESUME_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
                 new Organization(new Link("Company", null),
                         new Organization.Period(YearMonth.of(2000, 01), YearMonth.of(2002, 01),
                                 "Title", null),
@@ -136,7 +138,7 @@ public abstract class AbstractStorageTest {
     public void getAllSorted() {
         List<Resume> list = storage.getAllSorted();
         Assert.assertEquals(3, list.size());
-        Assert.assertEquals(Arrays.asList(RESUME_3, RESUME_2, RESUME_1), list);
+        Assert.assertEquals(new ArrayList<Resume>(Arrays.asList(RESUME_3, RESUME_2, RESUME_1)), list);
     }
 
     @Test
