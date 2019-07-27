@@ -98,7 +98,7 @@ public class FileStorage extends AbstractStorage<File> {
         if (array != null) {
             return array.length;
         } else {
-            throw new StorageException("Can not get String array of files", null);
+            throw new StorageException("Can not get String array of files", null, null);
         }
     }
 }
