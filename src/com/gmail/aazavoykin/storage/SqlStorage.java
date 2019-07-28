@@ -138,25 +138,18 @@ public class SqlStorage implements Storage {
         });
 
         String contactQuery = "SELECT * FROM contact ";
-        Set<Contact> contactSet = sqlHelper.execute(contactQuery, ps -> {
+        sqlHelper.execute(contactQuery, ps -> {
             ResultSet rs = ps.executeQuery();
-            Set<Contact> set = new HashSet<>();
             while (rs.next()) {
-                set.add(new Contact(rs.getString("resume_uuid"),
-                        ContactType.valueOf(rs.getString("type")),
-                        rs.getString("value")
-                        ));
+                String uuid = rs.getString("resume_uuid");
+                if (resumeMap.containsKey(uuid)) {
+                    resumeMap.get(uuid).addContact(ContactType.valueOf(rs.getString("type")),
+                            rs.getString("value"));
+                }
             }
-            return set;
+            return null;
         });
 
-        for (Contact c : contactSet) {
-            String uuid = c.getUuid();
-            if (resumeMap.containsKey(uuid)) {
-                resumeMap.get(uuid)
-                        .addContact(c.getType(), c.getValue());
-            }
-        }
         List<Resume> resultList = new ArrayList<>(resumeMap.values());
         return resultList;
     }
@@ -171,28 +164,5 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private class Contact {
-        private String uuid;
-        private ContactType type;
-        private String value;
 
-        private Contact(String uuid, ContactType type, String value) {
-            this.uuid = uuid;
-            this.type = type;
-            this.value = value;
-        }
-
-        public String getUuid() {
-            return uuid;
-        }
-
-        public ContactType getType() {
-            return type;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-    
 }
