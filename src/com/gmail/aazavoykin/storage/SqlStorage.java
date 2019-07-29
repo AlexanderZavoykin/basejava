@@ -6,7 +6,10 @@ import com.gmail.aazavoykin.model.Resume;
 import com.gmail.aazavoykin.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
@@ -127,31 +130,27 @@ public class SqlStorage implements Storage {
     public List<Resume> getAllSorted() {
         String resumeQuery = "SELECT * FROM resume " +
                 "ORDER BY full_name, uuid";
-        Map<String, Resume> resumeMap = sqlHelper.execute(resumeQuery, ps -> {
-            ResultSet rs = ps.executeQuery();
-            Map<String, Resume> map = new LinkedHashMap<>();
-            while (rs.next()) {
-                map.put(rs.getString("uuid"),
-                        new Resume(rs.getString("uuid"), rs.getString("full_name")));
-            }
-            return map;
-        });
-
         String contactQuery = "SELECT * FROM contact ";
-        sqlHelper.execute(contactQuery, ps -> {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String uuid = rs.getString("resume_uuid");
-                if (resumeMap.containsKey(uuid)) {
-                    resumeMap.get(uuid).addContact(ContactType.valueOf(rs.getString("type")),
+        Map<String, Resume> resumeMap = sqlHelper.transactionalExecute(connection -> {
+            Map<String, Resume> map = new LinkedHashMap<>();
+            try (PreparedStatement ps = connection.prepareStatement(resumeQuery)) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    map.put(rs.getString("uuid"),
+                            new Resume(rs.getString("uuid"), rs.getString("full_name")));
+                }
+            }
+            try (PreparedStatement ps = connection.prepareStatement(contactQuery)) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String uuid = rs.getString("resume_uuid");
+                    map.get(uuid).addContact(ContactType.valueOf(rs.getString("type")),
                             rs.getString("value"));
                 }
             }
-            return null;
+            return map;
         });
-
-        List<Resume> resultList = new ArrayList<>(resumeMap.values());
-        return resultList;
+        return new ArrayList<>(resumeMap.values());
     }
 
     @Override
