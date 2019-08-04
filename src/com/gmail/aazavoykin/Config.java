@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-class Config {
+public class Config {
     private static final File PROPS = new File(".\\config\\resumes.properties");
     private static final Config INSTANCE = new Config();
 
@@ -29,7 +29,7 @@ class Config {
         }
     }
 
-    static Config getInstance() {
+    public static Config getInstance() {
         return INSTANCE;
     }
 
@@ -37,15 +37,15 @@ class Config {
         return storageDir;
     }
 
-    String getDbUrl() {
+    public String getDbUrl() {
         return dbUrl;
     }
 
-    String getDbUser() {
+    public String getDbUser() {
         return dbUser;
     }
 
-    String getDbPassword() {
+    public String getDbPassword() {
         return dbPassword;
     }
 }
