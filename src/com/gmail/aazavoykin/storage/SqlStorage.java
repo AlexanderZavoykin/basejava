@@ -1,6 +1,7 @@
 package com.gmail.aazavoykin.storage;
 
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
+import com.gmail.aazavoykin.exception.StorageException;
 import com.gmail.aazavoykin.model.*;
 import com.gmail.aazavoykin.sql.SqlHelper;
 
@@ -13,6 +14,11 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new StorageException("PostgreSQL Driver is not found");
+        }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
     }
 
