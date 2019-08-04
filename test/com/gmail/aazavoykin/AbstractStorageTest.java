@@ -2,8 +2,7 @@ package com.gmail.aazavoykin;
 
 import com.gmail.aazavoykin.exception.ResumeAlreadyExistsStorageException;
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
-import com.gmail.aazavoykin.model.ContactType;
-import com.gmail.aazavoykin.model.Resume;
+import com.gmail.aazavoykin.model.*;
 import com.gmail.aazavoykin.storage.Storage;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,11 +38,11 @@ public abstract class AbstractStorageTest {
 
         RESUME_1.addContact(ContactType.EMAIL, "resume_1@gmail.com");
         RESUME_1.addContact(ContactType.SKYPE, "resume_1_skype");
-        /*RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
+        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
         RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective"));
         RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement_1", "Achievement_2", "Achievement_3"));
         RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qualification_1", "Qualification_2"));
-        RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+        /*RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
                 new Organization(new Link("CompanyName", "CompanyURL"),
                 new Organization.Period(YearMonth.of(1990, 01), YearMonth.of(1992, 06),
                         "Title", "Description"),
