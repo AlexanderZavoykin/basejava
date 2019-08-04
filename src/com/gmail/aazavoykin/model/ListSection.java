@@ -22,8 +22,6 @@ public class ListSection extends AbstractSection {
         this.skills = skills;
     }
 
-
-
     public void addSkill(String skill) {
         Objects.requireNonNull(skill, "Content must not be null");
         skills.add(skill);
