@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @XmlRootElement
 public class ListSection extends AbstractSection {
@@ -25,10 +26,6 @@ public class ListSection extends AbstractSection {
     public void addSkill(String skill) {
         Objects.requireNonNull(skill, "Content must not be null");
         skills.add(skill);
-    }
-
-    public void removeSkill(String skill) {
-        skills.remove(skill);
     }
 
     public List<String> getSkills() {
@@ -53,10 +50,6 @@ public class ListSection extends AbstractSection {
 
     @Override
     public String toString() {
-        String result = "";
-        for (String skill : skills) {
-            result = String.join(skill+"\n");
-        }
-        return result;
+        return skills.stream().collect(Collectors.joining("\n"));
     }
 }
