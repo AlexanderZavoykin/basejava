@@ -22,3 +22,18 @@ CREATE TABLE IF NOT EXISTS contact
 CREATE UNIQUE INDEX resume_pk
     ON resume (uuid);
 
+CREATE TABLE IF NOT EXISTS section
+(
+    id          serial      NOT NULL
+        CONSTRAINT section_pk
+            PRIMARY KEY,
+    resume_uuid varchar(36) NOT NULL
+        CONSTRAINT section_resume_uuid_fk
+            REFERENCES resume
+            ON UPDATE RESTRICT ON DELETE CASCADE,
+    type        text        NOT NULL,
+    value       text        NOT NULL
+);
+
+ALTER TABLE section
+    OWNER TO postgres;
