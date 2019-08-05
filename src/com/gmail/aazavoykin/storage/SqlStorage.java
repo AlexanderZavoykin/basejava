@@ -72,32 +72,47 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         LOGGER.info("get " + uuid);
-        String query = "SELECT * FROM resume r " +
-                "LEFT JOIN (SELECT type contact_type, value contact_value, resume_uuid FROM contact) c " +
+        String firstQuery = "SELECT * FROM resume r " +
+                "LEFT JOIN contact c " +
                 "ON r.uuid = c.resume_uuid " +
-                "LEFT JOIN (SELECT type section_type, value section_value, resume_uuid FROM section) s " +
-                "ON r.uuid = s.resume_uuid " +
                 "WHERE r.uuid = ?";
-        return sqlHelper.execute(query, ps -> {
+        Resume resume = sqlHelper.execute(firstQuery, ps -> {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 throw new ResumeDoesNotExistStorageException(uuid);
             }
-            Resume resume = new Resume(uuid, rs.getString("full_name"));
+            Resume r = new Resume(uuid, rs.getString("full_name"));
             do {
-                String contactValue = rs.getString("contact_value");
+                String contactValue = rs.getString("value");
                 if (contactValue != null) {
-                    ContactType type = ContactType.valueOf(rs.getString("contact_type"));
-                    resume.addContact(type, contactValue);
-                }
-                String sectionValue = rs.getString("section_value");
-                if (sectionValue != null) {
-                    getSection(resume, rs, "section_type", "section_value");
+                    ContactType type = ContactType.valueOf(rs.getString("type"));
+                    r.addContact(type, contactValue);
                 }
             } while (rs.next());
-            return resume;
+            return r;
         });
+
+        String secondQuery = "SELECT * FROM resume r " +
+                "LEFT JOIN section s " +
+                "ON r.uuid = s.resume_uuid " +
+                "WHERE r.uuid = ?";
+        sqlHelper.execute(secondQuery, ps -> {
+            ps.setString(1, uuid);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                throw new ResumeDoesNotExistStorageException(uuid);
+            }
+            do {
+                String sectionValue = rs.getString("value");
+                if (sectionValue != null) {
+                    getSection(resume, rs);
+                }
+            } while (rs.next());
+            return null;
+        });
+
+        return resume;
     }
 
     @Override
@@ -143,7 +158,7 @@ public class SqlStorage implements Storage {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String uuid = rs.getString("resume_uuid");
-                    getSection(map.get(uuid), rs, "type", "value");
+                    getSection(map.get(uuid), rs);
                 }
             }
 
@@ -206,9 +221,9 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void getSection(Resume r, ResultSet rs, String typeName, String valueName) throws SQLException {
-        String sectionValue = rs.getString(valueName);
-        SectionType type = SectionType.valueOf(rs.getString(typeName));
+    private void getSection(Resume r, ResultSet rs) throws SQLException {
+        String sectionValue = rs.getString("value");
+        SectionType type = SectionType.valueOf(rs.getString("type"));
         switch (type) {
             case PERSONAL:
             case OBJECTIVE:
