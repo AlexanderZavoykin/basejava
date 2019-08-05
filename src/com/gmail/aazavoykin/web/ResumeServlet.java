@@ -1,5 +1,6 @@
 package com.gmail.aazavoykin.web;
 
+import com.gmail.aazavoykin.Config;
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
 import com.gmail.aazavoykin.model.Resume;
 import com.gmail.aazavoykin.storage.SqlStorage;
@@ -12,10 +13,14 @@ import java.io.IOException;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
-    SqlStorage sqlStorage = new SqlStorage("jdbc:postgresql://localhost:5432/resumes", "postgres", "postgres");
+    SqlStorage sqlStorage;
 
-
-
+    @Override
+    public void init() throws ServletException {
+        sqlStorage = new SqlStorage(Config.getInstance().getDbUrl(),
+                Config.getInstance().getDbUser(),
+                Config.getInstance().getDbPassword());
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
