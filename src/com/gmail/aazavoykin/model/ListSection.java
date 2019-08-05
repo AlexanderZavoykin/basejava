@@ -53,10 +53,10 @@ public class ListSection extends AbstractSection {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
+        String result = "";
         for (String skill : skills) {
-            result.append(skill).append("\n");
+            result = String.join(skill+"\n");
         }
-        return result.toString();
+        return result;
     }
 }
