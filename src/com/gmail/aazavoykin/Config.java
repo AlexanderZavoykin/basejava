@@ -7,7 +7,15 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final File PROPS = new File(System.getProperty("projectDir") + "config/resumes.properties");
+    private static final File PROPS = new File(getProjectDir(), "config/resumes.properties");
+
+    private static File getProjectDir() {
+        String property = System.getProperty("projectDir");
+        System.out.println(property);
+        File projectDir = property == null ? new File(".") : new File(property);
+        return projectDir;
+    }
+
     private static final Config INSTANCE = new Config();
 
     private Properties properties = new Properties();
@@ -48,4 +56,7 @@ public class Config {
     public String getDbPassword() {
         return dbPassword;
     }
+
+
+
 }
