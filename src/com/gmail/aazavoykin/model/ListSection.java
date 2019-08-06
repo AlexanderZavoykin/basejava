@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @XmlRootElement
 public class ListSection extends AbstractSection {
@@ -50,6 +49,7 @@ public class ListSection extends AbstractSection {
 
     @Override
     public String toString() {
-        return skills.stream().collect(Collectors.joining("\n"));
+        //return skills.stream().collect(Collectors.joining("\n"));
+        return String.join("\n", skills);
     }
 }
