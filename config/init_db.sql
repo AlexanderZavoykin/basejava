@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS contact
             ON UPDATE RESTRICT ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX resume_pk
-    ON resume (uuid);
+create unique index contact_uuid_type_index
+    on contact (resume_uuid, type);
 
 CREATE TABLE IF NOT EXISTS section
 (
@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS section
     value       text        NOT NULL
 );
 
-ALTER TABLE section
-    OWNER TO postgres;
+create unique index section_uuid_type_index
+    on section (resume_uuid, type);
