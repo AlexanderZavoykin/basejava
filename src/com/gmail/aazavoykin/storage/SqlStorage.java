@@ -72,47 +72,47 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         LOGGER.info("get " + uuid);
-        String firstQuery = "SELECT * FROM resume r " +
+        String contactQuery = "SELECT * FROM resume r " +
                 "LEFT JOIN contact c " +
                 "ON r.uuid = c.resume_uuid " +
                 "WHERE r.uuid = ?";
-        Resume resume = sqlHelper.execute(firstQuery, ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new ResumeDoesNotExistStorageException(uuid);
-            }
-            Resume r = new Resume(uuid, rs.getString("full_name"));
-            do {
-                String contactValue = rs.getString("value");
-                if (contactValue != null) {
-                    ContactType type = ContactType.valueOf(rs.getString("type"));
-                    r.addContact(type, contactValue);
-                }
-            } while (rs.next());
-            return r;
-        });
-
-        String secondQuery = "SELECT * FROM resume r " +
+        String sectionQuery = "SELECT * FROM resume r " +
                 "LEFT JOIN section s " +
                 "ON r.uuid = s.resume_uuid " +
                 "WHERE r.uuid = ?";
-        sqlHelper.execute(secondQuery, ps -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new ResumeDoesNotExistStorageException(uuid);
-            }
-            do {
-                String sectionValue = rs.getString("value");
-                if (sectionValue != null) {
-                    getSection(resume, rs);
+        return sqlHelper.transactionalExecute(connection -> {
+            Resume r;
+            try (PreparedStatement ps = connection.prepareStatement(contactQuery)) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new ResumeDoesNotExistStorageException(uuid);
                 }
-            } while (rs.next());
-            return null;
+                r = new Resume(uuid, rs.getString("full_name"));
+                do {
+                    String contactValue = rs.getString("value");
+                    if (contactValue != null) {
+                        ContactType type = ContactType.valueOf(rs.getString("type"));
+                        r.addContact(type, contactValue);
+                    }
+                } while (rs.next());
+            }
+            try (PreparedStatement ps = connection.prepareStatement(sectionQuery)) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new ResumeDoesNotExistStorageException(uuid);
+                }
+                do {
+                    String sectionValue = rs.getString("value");
+                    if (sectionValue != null) {
+                        getSection(r, rs);
+                    }
+                } while (rs.next());
+            }
+            return r;
         });
 
-        return resume;
     }
 
     @Override
