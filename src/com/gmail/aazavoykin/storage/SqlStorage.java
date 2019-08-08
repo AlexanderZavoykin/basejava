@@ -76,10 +76,8 @@ public class SqlStorage implements Storage {
                 "LEFT JOIN contact c " +
                 "ON r.uuid = c.resume_uuid " +
                 "WHERE r.uuid = ?";
-        String sectionQuery = "SELECT * FROM resume r " +
-                "LEFT JOIN section s " +
-                "ON r.uuid = s.resume_uuid " +
-                "WHERE r.uuid = ?";
+        String sectionQuery = "SELECT type, value FROM section " +
+                "WHERE resume_uuid = ?";
         return sqlHelper.transactionalExecute(connection -> {
             Resume r;
             try (PreparedStatement ps = connection.prepareStatement(contactQuery)) {
@@ -100,15 +98,12 @@ public class SqlStorage implements Storage {
             try (PreparedStatement ps = connection.prepareStatement(sectionQuery)) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
-                if (!rs.next()) {
-                    throw new ResumeDoesNotExistStorageException(uuid);
-                }
-                do {
+                while (rs.next()) {
                     String sectionValue = rs.getString("value");
                     if (sectionValue != null) {
                         getSection(r, rs);
                     }
-                } while (rs.next());
+                }
             }
             return r;
         });
