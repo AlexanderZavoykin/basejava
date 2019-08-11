@@ -2,11 +2,18 @@ package com.gmail.aazavoykin.storage;
 
 import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
 import com.gmail.aazavoykin.exception.StorageException;
-import com.gmail.aazavoykin.model.*;
+import com.gmail.aazavoykin.model.AbstractSection;
+import com.gmail.aazavoykin.model.ContactType;
+import com.gmail.aazavoykin.model.Resume;
+import com.gmail.aazavoykin.model.SectionType;
 import com.gmail.aazavoykin.sql.SqlHelper;
+import com.gmail.aazavoykin.util.JsonParser;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
@@ -209,7 +216,11 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, AbstractSection> e : r.getSections().entrySet()) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, e.getKey().toString());
-                ps.setString(3, e.getValue().toString());
+                /*
+                 ** doesn`t deal with Organization section:
+                 ** ps.setString(3, e.getValue().toString());
+                 */
+                ps.setString(3, JsonParser.write(e.getValue(), AbstractSection.class));
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -217,19 +228,23 @@ public class SqlStorage implements Storage {
     }
 
     private void getSection(Resume r, ResultSet rs) throws SQLException {
-        String sectionValue = rs.getString("value");
+        String content = rs.getString("value");
         SectionType type = SectionType.valueOf(rs.getString("type"));
+        r.addSection(type, JsonParser.read(content, AbstractSection.class));
+        /*
+        ** this block of code was used first to get sections except those of type OrganizationSection
         switch (type) {
             case PERSONAL:
             case OBJECTIVE:
-                r.addSection(type, new TextSection(sectionValue));
+                r.addSection(type, new TextSection(content));
                 break;
             case ACHIEVEMENT:
             case QUALIFICATION:
-                List<String> skills = new ArrayList<>(Arrays.asList(sectionValue.split("\n")));
+                List<String> skills = new ArrayList<>(Arrays.asList(content.split("\n")));
                 r.addSection(type, new ListSection(skills));
                 break;
         }
+        */
     }
 
 }
