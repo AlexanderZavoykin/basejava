@@ -182,6 +182,16 @@ public class SqlStorage implements Storage {
     private void deleteContacts(Resume r, Connection connection) throws SQLException {
         String query = "DELETE FROM contact " +
                 "WHERE resume_uuid = ?";
+        deleteData(r, connection, query);
+    }
+
+    private void deleteSections(Resume r, Connection connection) throws SQLException {
+        String query = "DELETE FROM section " +
+                "WHERE resume_uuid = ?";
+        deleteData(r, connection, query);
+    }
+
+    private void deleteData(Resume r, Connection connection, String query) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, r.getUuid());
             ps.execute();
@@ -198,15 +208,6 @@ public class SqlStorage implements Storage {
                 ps.addBatch();
             }
             ps.executeBatch();
-        }
-    }
-
-    private void deleteSections(Resume r, Connection connection) throws SQLException {
-        String query = "DELETE FROM section " +
-                "WHERE resume_uuid = ?";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, r.getUuid());
-            ps.execute();
         }
     }
 
