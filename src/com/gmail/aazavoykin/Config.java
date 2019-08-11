@@ -8,14 +8,6 @@ import java.util.Properties;
 
 public class Config {
     private static final File PROPS = new File(getProjectDir(), "config/resumes.properties");
-
-    private static File getProjectDir() {
-        String property = System.getProperty("projectDir");
-        System.out.println(property);
-        File projectDir = property == null ? new File(".") : new File(property);
-        return projectDir;
-    }
-
     private static final Config INSTANCE = new Config();
 
     private Properties properties = new Properties();
@@ -41,6 +33,15 @@ public class Config {
         return INSTANCE;
     }
 
+    private static File getProjectDir() {
+        String property = System.getProperty("projectDir");
+        File projectDir = property == null ? new File(".") : new File(property);
+        if (!projectDir.isDirectory()) {
+            throw new IllegalStateException(projectDir + " is not directory");
+        }
+        return projectDir;
+    }
+
     File getStorageDir() {
         return storageDir;
     }
@@ -56,7 +57,5 @@ public class Config {
     public String getDbPassword() {
         return dbPassword;
     }
-
-
 
 }
