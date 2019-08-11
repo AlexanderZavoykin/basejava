@@ -1,14 +1,57 @@
 package com.gmail.aazavoykin;
 
 import com.gmail.aazavoykin.model.*;
-import com.gmail.aazavoykin.util.DateUtil;
 
 import java.time.YearMonth;
-import java.util.LinkedList;
 
 public class ResumeTestData {
 
-    private static Resume createTestResume(String uuid, String fullName) {
+    static final String UUID_1 = "uuid_1";
+    static final String UUID_2 = "uuid_2";
+    static final String UUID_3 = "uuid_3";
+    static final String UUID_CHECK = "uuid_check";
+    public static final Resume RESUME_1;
+    static final Resume RESUME_2;
+    static final Resume RESUME_3;
+    static final Resume RESUME_CHECK;
+
+    static {
+        RESUME_1 = new Resume(UUID_1, "Mark Twain");
+        RESUME_2 = new Resume(UUID_2, "Jorge Amado");
+        RESUME_3 = new Resume(UUID_3, "Ernest Hemingway");
+        RESUME_CHECK = new Resume(UUID_CHECK, "Pancho Villa");
+
+        RESUME_1.addContact(ContactType.EMAIL, "resume_1@gmail.com");
+        RESUME_1.addContact(ContactType.SKYPE, "resume_1_skype");
+        RESUME_1.addSection(SectionType.PERSONAL, new TextSection("Personal"));
+        RESUME_1.addSection(SectionType.OBJECTIVE, new TextSection("Objective"));
+        RESUME_1.addSection(SectionType.ACHIEVEMENT, new ListSection("Achievement_1", "Achievement_2", "Achievement_3"));
+        RESUME_1.addSection(SectionType.QUALIFICATION, new ListSection("Qualification_1", "Qualification_2"));
+        RESUME_1.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization(new Link("CompanyName", "CompanyURL"),
+                new Organization.Period(YearMonth.of(1990, 1), YearMonth.of(1992, 6),
+                        "Title", "Description"),
+                new Organization.Period(YearMonth.of(1990, 1), YearMonth.of(1992, 6),
+                        "Title", "Description"))));
+        RESUME_1.addSection(SectionType.EDUCATION, new OrganizationSection(
+                new Organization(new Link("University", null),
+                        new Organization.Period(YearMonth.of(1982, 1), YearMonth.of(1985, 1),
+                                "Title", null),
+                        new Organization.Period(YearMonth.of(1985, 2), YearMonth.of(1989, 12),
+                                "Title", "Description"))));
+
+        RESUME_2.addContact(ContactType.EMAIL, "resume_2@gmail.com");
+        RESUME_2.addContact(ContactType.SKYPE, "resume_2_skype");
+        RESUME_2.addSection(SectionType.EXPERIENCE, new OrganizationSection(
+                new Organization(new Link("Company", null),
+                        new Organization.Period(YearMonth.of(2000, 1), YearMonth.of(2002, 1),
+                                "Title", null),
+                        new Organization.Period(YearMonth.of(2005, 1), YearMonth.of(2008, 1),
+                                "Title", "Description"))));
+    }
+
+
+    /*private static Resume createTestResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
         // fill contacts
         resume.getContacts().put(ContactType.PHONE, "+7(921) 855-0482");
@@ -241,6 +284,6 @@ public class ResumeTestData {
     public static void main(String[] args) {
         Resume resume = createTestResume("uuid", "Григорий Кислин");
         printTestResume(resume);
-    }
+    }*/
 
 }
