@@ -1,10 +1,11 @@
 package com.gmail.aazavoykin.web;
 
 import com.gmail.aazavoykin.Config;
-import com.gmail.aazavoykin.exception.ResumeDoesNotExistStorageException;
+import com.gmail.aazavoykin.model.ContactType;
 import com.gmail.aazavoykin.model.Resume;
 import com.gmail.aazavoykin.storage.SqlStorage;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,25 +23,51 @@ public class ResumeServlet extends HttpServlet {
                 Config.getInstance().getDbPassword());
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume r = sqlStorage.get(uuid);
+        r.setFullName(fullName);
+        for (ContactType ct : ContactType.values()) {
+            String value = request.getParameter(ct.name());
+            if (value != null && value.trim().length() != 0) {
+                r.addContact(ct, value);
+            } else {
+                r.getContacts().remove(ct);
+            }
+        }
+        sqlStorage.update(r);
+        response.sendRedirect("resume");
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String uuid = request.getParameter("uuid");
-        if (uuid != null) {
-            try {
-                Resume resume = sqlStorage.get(uuid);
-                response.getWriter().write(resume.getUuid() + " " + resume.getFullName());
-            } catch (ResumeDoesNotExistStorageException e) {
-                response.getWriter().write("Resume with uuid " + uuid + " does not exist");
-            }
-        } else {
-            drawTable(response);
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", sqlStorage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
+        Resume r = null;
+        switch (action) {
+            case "create":
+                break;
+            case "view":
+            case "edit":
+                r = sqlStorage.get(uuid);
+                break;
+            case "delete":
+                sqlStorage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            default:
+                throw new IllegalStateException("Action " + action + " is not legal");
+        }
+        request.setAttribute("resume", r);
+        request.getRequestDispatcher("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+                .forward(request, response);
     }
 
     private void drawTable(HttpServletResponse response) throws IOException {
