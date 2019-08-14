@@ -23,7 +23,6 @@ public class Organization implements Serializable {
     public Organization() {
     }
 
-
     public Organization(Link link, List<Period> periods) {
         this.link = link;
         this.periods = periods;
@@ -82,7 +81,6 @@ public class Organization implements Serializable {
         }
         result.append("\n");
         return result.toString();
-
     }
 
 
@@ -95,7 +93,7 @@ public class Organization implements Serializable {
         private YearMonth endDate;
         private String title;
         private String description;
-        static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/uuuu");
+        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/uuuu");
 
         public Period() {
         }
