@@ -52,4 +52,5 @@ public class ListSection extends AbstractSection {
         //return skills.stream().collect(Collectors.joining("\n"));
         return String.join("\n", skills);
     }
+
 }

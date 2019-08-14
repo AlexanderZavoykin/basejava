@@ -62,11 +62,6 @@ public class OrganizationSection extends AbstractSection {
     }
 
     private static void writeStringOrSpace(DataOutputStream dos, String s) throws IOException {
-        if (s != null) {
-            dos.writeUTF(s);
-        } else {
-            dos.writeUTF("");
-        }
+        dos.writeUTF(s != null ? s : "");
     }
-
 }
