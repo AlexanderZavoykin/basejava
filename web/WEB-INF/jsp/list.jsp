@@ -14,8 +14,8 @@
 <section>
     <table border=1 cellpadding="8" cellspacing="0">
         <tr>
-            <td><b>Имя</b></td>
-            <td><b>E-mail</b></td>
+            <td align = 'middle'><b>Имя</b></td>
+            <td align = 'middle'><b>E-mail</b></td>
             <td></td>
             <td></td>
         </tr>
@@ -24,11 +24,13 @@
             <tr>
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
                 <td>${resume.getContact(ContactType.EMAIL)}</td>
-                <td><a href="resume?uuid=${resume.uuid}&action=edit">Edit</a></td>
-                <td><a href="resume?uuid=${resume.uuid}&action=delete">Delete</a></td>
+                <td><a href="resume?uuid=${resume.uuid}&action=edit">Редактировать</a></td>
+                <td><a href="resume?uuid=${resume.uuid}&action=delete">Удалить</a></td>
             </tr>
         </c:forEach>
     </table>
+    <h4><a href="resume?uuid=${resume.uuid}&action=add">Добавить новое резюме</a></h4>
+    <hr/>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

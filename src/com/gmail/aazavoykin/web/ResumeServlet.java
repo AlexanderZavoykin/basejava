@@ -1,8 +1,7 @@
 package com.gmail.aazavoykin.web;
 
 import com.gmail.aazavoykin.Config;
-import com.gmail.aazavoykin.model.ContactType;
-import com.gmail.aazavoykin.model.Resume;
+import com.gmail.aazavoykin.model.*;
 import com.gmail.aazavoykin.storage.SqlStorage;
 
 import javax.servlet.ServletException;
@@ -10,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
@@ -37,6 +36,34 @@ public class ResumeServlet extends HttpServlet {
                 r.getContacts().remove(ct);
             }
         }
+        for (SectionType st : SectionType.values()) {
+            switch (st) {
+                case PERSONAL:
+                case OBJECTIVE:
+                    String value = request.getParameter(st.name());
+                    if (value != null && value.trim().length() != 0) {
+                        r.addSection(st, new TextSection(value));
+                    }
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATION:
+                    String[] values = request.getParameterValues(st.name());
+                    List<String> toUpdate = new ArrayList<>();
+                    if (values != null && values.length != 0) {
+                        for (String s : values) {
+                            if (s != null && s.trim().length() != 0) {
+                                toUpdate.add(s);
+                            }
+                        }
+                        r.addSection(st, new ListSection(toUpdate));
+                    }
+                    break;
+                case EDUCATION:
+                case EXPERIENCE:
+                    // TODO write OrganizationSection to resume
+                    break;
+            }
+        }
         sqlStorage.update(r);
         response.sendRedirect("resume");
 
@@ -50,9 +77,11 @@ public class ResumeServlet extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
-        Resume r = null;
+        Resume r;
         switch (action) {
-            case "create":
+            case "add":
+                r = new Resume("");
+                sqlStorage.save(r);
                 break;
             case "view":
             case "edit":
@@ -68,32 +97,7 @@ public class ResumeServlet extends HttpServlet {
         request.setAttribute("resume", r);
         request.getRequestDispatcher("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
                 .forward(request, response);
-    }
 
-    private void drawTable(HttpServletResponse response) throws IOException {
-        List<Resume> list = sqlStorage.getAllSorted();
-        PrintWriter writer = response.getWriter();
-        writer.println("<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>Перечень резюме</title>\n" +
-                "</head>\n" +
-                "<body>");
-
-        writer.println("<table border = 1>");
-        writer.println("<tr>\n" +
-                "<td><b>Имя</b></td>");
-        for (Resume r : list) {
-            writer.println("<tr>");
-            writer.println("<td><a href=\"resume?uuid=" + r.getUuid() + "\">" + r.getFullName() + "</a></td>");
-            //response.getWriter().println("<td>" + r.getFullName() + "</td>");
-            writer.println("</tr>");
-        }
-        writer.println("</table>");
-
-        writer.println("</body>\n" +
-                "</html>");
     }
 
 }
