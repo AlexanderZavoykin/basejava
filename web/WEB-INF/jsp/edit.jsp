@@ -1,5 +1,3 @@
-<%@ page import="com.gmail.aazavoykin.model.ContactType" %>
-<%@ page import="com.gmail.aazavoykin.model.SectionType" %>
 <%@ page import="com.gmail.aazavoykin.util.HtmlWriter" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -25,30 +23,13 @@
             <dd><input type="text" name="fullName" value="${resume.fullName}" size="40"/></dd>
         </dl>
 
-        <%-->
-        -- Contacts
-        <--%>
+        <%-->Contacts<--%>
         <h3>Контакты: </h3>
-        <c:forEach items="<%=ContactType.values()%>" var="с_type">
-            <jsp:useBean id="с_type" type="com.gmail.aazavoykin.model.ContactType"/>
-            <dl>
-                <dt><%=с_type.getTitle()%>
-                </dt>
-                <dd><input type="text" name="${с_type.name()}" value="${resume.getContact(с_type)}" size="50"/></dd>
-            </dl>
-        </c:forEach>
+        <%=HtmlWriter.createContactForms(resume)%>
         <hr>
 
-        <%-->
-        -- Sections
-        <--%>
-        <c:forEach items="${resume.sections}" var="sectionEntry">
-            <jsp:useBean id="sectionEntry"
-                         type="java.util.Map.Entry<com.gmail.aazavoykin.model.SectionType,
-                     com.gmail.aazavoykin.model.AbstractSection>"/>
-            <%=HtmlWriter.createSectionForm(sectionEntry.getKey(), sectionEntry.getValue())%>
-        </c:forEach>
-
+        <%-->Sections<--%>
+        <%=HtmlWriter.createSectionForms(resume)%>
         <hr>
 
         <button type="submit">Сохранить</button>
