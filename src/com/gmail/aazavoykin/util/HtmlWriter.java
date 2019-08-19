@@ -29,31 +29,55 @@ public class HtmlWriter {
         return result;
     }
 
-    public static String createSectionForm(SectionType sectionType, AbstractSection section) {
-        String result = "<dl><dt><h3>" + sectionType.getTitle() + ":</h3></dt><br>";
-        switch (sectionType) {
-            case PERSONAL:
-            case OBJECTIVE:
-                result += "<dd><textarea form = \"edit_form\" rows = \"4\" cols=\"150\" type=\"text\" name=\"" + sectionType.name() + "\">" +
-                        ((TextSection) section).getBody() +
-                        "</textarea>" + "</dd>";
-                break;
-            case ACHIEVEMENT:
-            case QUALIFICATION:
-                List<String> skills = ((ListSection) section).getSkills();
-                int inputNum = Math.max(skills.size(), 5);
-                result += "<dd>";
-                for (int i = 0; i < inputNum; i++) {
-                    String skill = i < skills.size() ? skills.get(i) : "";
-                    result += "<li><input type=\"text\" name=\"" + sectionType.name() + "\" value=\"" + skill +
-                            "\" size=\"150\">";
-                }
-                result += "</dd></dl>";
-                break;
-            case EXPERIENCE:
-            case EDUCATION:
-                // TODO creating block of forms for each organization
-                break;
+    public static String createContactForms(Resume resume) {
+        String result = "";
+        for (ContactType contactType : ContactType.values()) {
+            result += "<dl><dt>" + contactType.getTitle() + "</dt>" +
+                    "<dd><input type=\"text\" name=\"${" + contactType.name() + "}\" ";
+            String value = resume.getContact(contactType);
+            if (value != null) {
+                result += "value=\"" + value + "\"";
+            }
+            result += "size=\"50\"/></dd>\n" + "</dl>";
+        }
+        return result;
+    }
+
+    public static String createSectionForms(Resume resume) {
+        String result = "";
+        for (SectionType sectionType : SectionType.values()) {
+            result += "<dl><dt><h3>" + sectionType.getTitle() + ":</h3></dt><br>";
+            AbstractSection aSection = resume.getSection(sectionType);
+            switch (sectionType) {
+                case PERSONAL:
+                case OBJECTIVE:
+                    result += "<dd><textarea form = \"edit_form\" rows = \"4\" cols=\"150\" name=\"" + sectionType.name() + "\">";
+                    if (aSection != null) {
+                        String body = ((TextSection) aSection).getBody();
+                        if (body != null) {
+                            result += body;
+                        }
+                    }
+                    result += "</textarea>" + "</dd>";
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATION:
+                    result += "<dd><textarea form = \"edit_form\" rows = \"4\" cols=\"150\" name=\"" + sectionType.name() + "\">";
+                    if (aSection != null) {
+                        List<String> skills = ((ListSection) aSection).getSkills();
+                        if (skills != null) {
+                            for (String skill : skills) {
+                                result += skill + "\n";
+                            }
+                        }
+                    }
+                    result += "</textarea>" + "</dd>";
+                    break;
+                case EXPERIENCE:
+                case EDUCATION:
+                    // TODO creating block of forms for each organization
+                    break;
+            }
         }
         return result;
     }
