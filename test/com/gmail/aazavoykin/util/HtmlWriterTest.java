@@ -18,5 +18,4 @@ public class HtmlWriterTest {
     public void toHtml() {
         System.out.println(HtmlWriter.toHtml(SectionType.EXPERIENCE, section));
     }
-
 }

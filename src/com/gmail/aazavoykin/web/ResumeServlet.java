@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
@@ -24,10 +24,17 @@ public class ResumeServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        String uuid = request.getParameter("uuid");
+        String action = request.getParameter("action");
         String fullName = request.getParameter("fullName");
-        Resume r = sqlStorage.get(uuid);
-        r.setFullName(fullName);
+        Resume r;
+        if ("add".equals(action)) {
+            r = new Resume(fullName);
+            sqlStorage.save(r);
+        } else {
+            String uuid = request.getParameter("uuid");
+            r = sqlStorage.get(uuid);
+            r.setFullName(fullName);
+        }
         for (ContactType ct : ContactType.values()) {
             String value = request.getParameter(ct.name());
             if (value != null && value.trim().length() != 0) {
@@ -37,25 +44,19 @@ public class ResumeServlet extends HttpServlet {
             }
         }
         for (SectionType st : SectionType.values()) {
+            String value = request.getParameter(st.name());
             switch (st) {
                 case PERSONAL:
                 case OBJECTIVE:
-                    String value = request.getParameter(st.name());
                     if (value != null && value.trim().length() != 0) {
                         r.addSection(st, new TextSection(value));
                     }
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATION:
-                    String[] values = request.getParameterValues(st.name());
-                    List<String> toUpdate = new ArrayList<>();
-                    if (values != null && values.length != 0) {
-                        for (String s : values) {
-                            if (s != null && s.trim().length() != 0) {
-                                toUpdate.add(s);
-                            }
-                        }
-                        r.addSection(st, new ListSection(toUpdate));
+                    if (value != null && value.trim().length() != 0) {
+                        List<String> skills = Arrays.asList(value.split("\n"));
+                        r.addSection(st, new ListSection(skills));
                     }
                     break;
                 case EDUCATION:
@@ -66,7 +67,6 @@ public class ResumeServlet extends HttpServlet {
         }
         sqlStorage.update(r);
         response.sendRedirect("resume");
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -81,7 +81,6 @@ public class ResumeServlet extends HttpServlet {
         switch (action) {
             case "add":
                 r = new Resume("");
-                sqlStorage.save(r);
                 break;
             case "view":
             case "edit":
