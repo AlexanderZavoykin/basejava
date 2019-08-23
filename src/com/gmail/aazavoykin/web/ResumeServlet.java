@@ -29,7 +29,7 @@ public class ResumeServlet extends HttpServlet {
         Resume r;
         if ("add".equals(action)) {
             r = new Resume(fullName);
-            sqlStorage.save(r);
+
         } else {
             String uuid = request.getParameter("uuid");
             r = sqlStorage.get(uuid);
@@ -50,6 +50,8 @@ public class ResumeServlet extends HttpServlet {
                 case OBJECTIVE:
                     if (value != null && value.trim().length() != 0) {
                         r.addSection(st, new TextSection(value));
+                    } else {
+                        r.getSections().remove(st);
                     }
                     break;
                 case ACHIEVEMENT:
@@ -57,6 +59,8 @@ public class ResumeServlet extends HttpServlet {
                     if (value != null && value.trim().length() != 0) {
                         List<String> skills = Arrays.asList(value.split("\n"));
                         r.addSection(st, new ListSection(skills));
+                    } else {
+                        r.getSections().remove(st);
                     }
                     break;
                 case EDUCATION:
@@ -65,7 +69,11 @@ public class ResumeServlet extends HttpServlet {
                     break;
             }
         }
-        sqlStorage.update(r);
+        if ("add".equals(action)) {
+            sqlStorage.save(r);
+        } else {
+            sqlStorage.update(r);
+        }
         response.sendRedirect("resume");
     }
 
