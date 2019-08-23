@@ -7,10 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
     <jsp:useBean id="resume" type="com.gmail.aazavoykin.model.Resume" scope="request"/>
     <title>
-        <c:choose>
-            <c:when test="${param.get(\"action\").equals(\"edit\")}">Резюме ${resume.fullName}}</c:when>
-            <c:when test="${param.get(\"action\").equals(\"add\")}">Новое резюме</c:when>
-        </c:choose>
+        <%=
+            request.getParameter("action").equals("edit") ? "Резюме " + resume.getFullName() : "Новое резюме"
+        %>
     </title>
 </head>
 <body>
@@ -18,10 +17,7 @@
 <section>
     <form id="edit_form" action="resume" method="post" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${resume.uuid}">
-        <c:choose>
-            <c:when test="${param.get(\"action\").equals(\"edit\")}"><input type="hidden" name="action" value="edit"></c:when>
-            <c:when test="${param.get(\"action\").equals(\"add\")}"><input type="hidden" name="action" value="add"></c:when>
-        </c:choose>
+        <input type="hidden" name="action" value="<%=request.getParameter("action").equals("edit") ? "edit" : "add"%>">
         <dl>
             <dt>Имя:</dt>
             <dd><input type="text" name="fullName" value="${resume.fullName}" size="40"/></dd>
