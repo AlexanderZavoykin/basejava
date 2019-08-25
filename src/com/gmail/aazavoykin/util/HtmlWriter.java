@@ -15,9 +15,11 @@ public class HtmlWriter {
                 break;
             case ACHIEVEMENT:
             case QUALIFICATION:
+                result += "<ul>";
                 for (String s : ((ListSection) section).getSkills()) {
                     result += "<li>" + s + "</li>";
                 }
+                result += "</ul>";
                 break;
             case EXPERIENCE:
             case EDUCATION:
