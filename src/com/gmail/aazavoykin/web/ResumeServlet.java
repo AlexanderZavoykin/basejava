@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,106 +67,86 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case EDUCATION:
                 case EXPERIENCE:
-                    // update existing organizations info
-                    int i = 1;
-                    OrganizationSection os = (OrganizationSection) r.getSection(st);
-                    if (os != null) {
-                        List<Organization> orgs = os.getOrganizations();
-                        if (orgs != null) {
-                            for (Organization o : orgs) {
-                                String orgPrefix = st.name() + "_org" + i;
-                                String name = request.getParameter(orgPrefix + "_name");
-                                String urlValue = request.getParameter(orgPrefix + "_url");
-                                if (HtmlUtil.notEmpty(name)) {
-                                    o.getLink().setName(name);
-                                }
-                                if (HtmlUtil.notEmpty(name)) {
-                                    o.getLink().setUrl(urlValue);
-                                }
-                                int k = 1;
-                                List<Organization.Period> periods = o.getPeriods();
-                                if (periods != null) {
-                                    for (Organization.Period p : periods) {
-                                        // update existing periods
-                                        String periodPrefix = orgPrefix + "_per" + k;
-                                        String title = request.getParameter(periodPrefix + "_title");
-                                        String startDate = request.getParameter(periodPrefix + "_start");
-                                        String endDate = request.getParameter(periodPrefix + "_end");
-                                        String description = request.getParameter(periodPrefix + "_descr");
-                                        if (HtmlUtil.notEmpty(title)) {
-                                            p.setTitle(title);
+                    List<Organization> orgList = new ArrayList<>();
+                    String[] values = request.getParameterValues(st.name() + "_name");
+                    if (values != null) {
+                        for (int i = 0; i < values.length; i++) {
+                            /*
+                             ** if organization`s name is not empty
+                             ** read the rest of info came from inputs
+                             */
+                            if (HtmlUtil.notEmpty(values[i])) {
+                                List<Organization.Period> periods = new ArrayList<>();
+                                String prefix = st.name() + "_" + (i + 1);
+                                String[] startDates = request.getParameterValues(prefix + "_start");
+                                String[] endDates = request.getParameterValues(prefix + "_end");
+                                String[] titles = request.getParameterValues(prefix + "_title");
+                                String[] descriptions = request.getParameterValues(prefix + "_descr");
+                                for (int k = 0; k < titles.length; k++) {
+                                    if (HtmlUtil.notEmpties(titles[k], startDates[k], endDates[k])) {
+                                        Organization.Period period = new Organization.Period(DateUtil.toDate(startDates[k]),
+                                                DateUtil.toDate(endDates[k]), titles[k]);
+                                        if (HtmlUtil.notEmpty(descriptions[k])) {
+                                            period.setDescription(descriptions[k]);
                                         }
-                                        if (HtmlUtil.notEmpty(startDate)) {
-                                            p.setStartDate(DateUtil.toDate(startDate));
-                                        }
-                                        if (HtmlUtil.notEmpty(endDate)) {
-                                            p.setEndDate(DateUtil.toDate(endDate));
-                                        }
-                                        if (HtmlUtil.notEmpty(description)) {
-                                            p.setDescription(description);
-                                        }
-
-                                        // delete period if inputs are empty
-                                        if (!HtmlUtil.notEmpty(title) && !HtmlUtil.notEmpty(startDate) &&
-                                        !HtmlUtil.notEmpty(endDate) && !HtmlUtil.notEmpty(description)) {
-                                            periods.remove(p);
-                                        }
-                                        k++;
+                                        periods.add(period);
                                     }
                                 }
-
-                                // save new period:
-                                String newStartDate = request.getParameter(orgPrefix + "_perNEW_start");
-                                String newEndDate = request.getParameter(orgPrefix + "_perNEW_end");
-                                String newTitle = request.getParameter(orgPrefix + "_perNEW_title");
-
+                                /*
+                                 ** add new period to organization if there is info from inputs
+                                 */
+                                String newStartDate = request.getParameter(prefix + "_NEW_start");
+                                String newEndDate = request.getParameter(prefix + "_NEW_end");
+                                String newTitle = request.getParameter(prefix + "_NEW_title");
+                                String newDescription = request.getParameter(prefix + "_NEW_descr");
                                 if (HtmlUtil.notEmpties(newStartDate, newEndDate, newTitle)) {
-                                    Organization.Period period = new Organization.Period();
-                                    period.setStartDate(DateUtil.toDate(newStartDate));
-                                    period.setEndDate(DateUtil.toDate(newEndDate));
-                                    period.setTitle(newTitle);
-                                    String newDescription = request.getParameter(orgPrefix + "_perNEW_descr");
+                                    Organization.Period period = new Organization.Period(DateUtil.toDate(newStartDate),
+                                            DateUtil.toDate(newEndDate), newTitle);
                                     if (HtmlUtil.notEmpty(newDescription)) {
                                         period.setDescription(newDescription);
                                     }
-                                    o.addPeriod(period);
+                                    periods.add(period);
                                 }
-                                i++;
+                                /*
+                                 ** create new Organization and add it to orgList
+                                 */
+                                String[] urls = request.getParameterValues(prefix + "_url");
+                                Link link = new Link(values[i]);
+                                if (HtmlUtil.notEmpty(urls[i])) {
+                                    link.setUrl(urls[i]);
+                                }
+                                orgList.add(new Organization(link, periods));
                             }
                         }
                     }
 
-                    // save new organization
-                    String newName = request.getParameter(st.name() + "_orgNEW_name");
-                    String newStartDate = request.getParameter(st.name() + "_orgNEW_start");
-                    String newEndDate = request.getParameter(st.name() + "_orgNEW_end");
-                    String newTitle = request.getParameter(st.name() + "_orgNEW_title");
-
-                    if (HtmlUtil.notEmpties(newName, newStartDate, newEndDate, newTitle)) {
-                        String newUrlPar = st.name() + "_orgNEW_url";
-                        String newDescrPar = st.name() +  "_orgNEW_descr";
-                        String newUrl = request.getParameter(newUrlPar);
-                        String newDescription = request.getParameter(newDescrPar);
-                        Organization.Period period = new Organization.Period();
-                        period.setStartDate(DateUtil.toDate(newStartDate));
-                        period.setEndDate(DateUtil.toDate(newEndDate));
-                        period.setTitle(newTitle);
-                        if (HtmlUtil.notEmpty(newDescription)) {
-                            period.setDescription(newDescription);
-                        }
+                    /*
+                     ** add new Organization to orgList if there is info from inputs
+                     */
+                    String newName = request.getParameter(st.name() + "_NEW_name");
+                    String newUrl = request.getParameter(st.name() + "_NEW_url");
+                    String newStartDate = request.getParameter(st.name() + "_NEW_start");
+                    String newEndDate = request.getParameter(st.name() + "_NEW_end");
+                    String newTitle = request.getParameter(st.name() + "_NEW_title");
+                    String newDescription = request.getParameter(st.name() + "_NEW_descr");
+                    if (HtmlUtil.notEmpty(newName)) {
                         Link link = new Link(newName);
                         if (HtmlUtil.notEmpty(newUrl)) {
                             link.setUrl(newUrl);
                         }
-                        Organization organization = new Organization(link, period);
-                        if (r.getSection(st) == null) {
-                            r.addSection(st, new OrganizationSection(organization));
-                        } else {
-                            ((OrganizationSection) r.getSection(st)).addOrganization(organization);
+                        if (HtmlUtil.notEmpties(newStartDate, newEndDate, newTitle)) {
+                            Organization.Period period = new Organization.Period(DateUtil.toDate(newStartDate),
+                                    DateUtil.toDate(newEndDate), newTitle);
+                            if (HtmlUtil.notEmpty(newDescription)) {
+                                period.setDescription(newDescription);
+                            }
+                            orgList.add(new Organization(link, period));
                         }
-
                     }
-                    break;
+                    /*
+                     ** create new section and replace existing section in Resume r with the new one
+                     */
+                    r.addSection(st, new OrganizationSection(orgList));
             }
         }
         if ("add".equals(action)) {
