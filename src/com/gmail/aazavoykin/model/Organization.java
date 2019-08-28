@@ -98,13 +98,18 @@ public class Organization implements Serializable {
         public Period() {
         }
 
-        public Period(YearMonth startDate, YearMonth endDate, String title, String description) {
+        public Period(YearMonth startDate, YearMonth endDate, String title) {
             Objects.requireNonNull(startDate, "Start date must not be null");
             Objects.requireNonNull(endDate, "End date must not be null");
             Objects.requireNonNull(title, "Title must not be null");
             this.startDate = startDate;
             this.endDate = endDate;
             this.title = title;
+        }
+
+
+        public Period(YearMonth startDate, YearMonth endDate, String title, String description) {
+            this(startDate, endDate, title);
             this.description = description;
         }
 
