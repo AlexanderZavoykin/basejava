@@ -2,9 +2,10 @@ package com.gmail.aazavoykin.util;
 
 import com.gmail.aazavoykin.model.*;
 
+import java.time.YearMonth;
 import java.util.List;
 
-public class HtmlWriter {
+public class HtmlUtil {
 
     public static String toHtml(SectionType sectionType, AbstractSection section) {
         String result = "";
@@ -29,6 +30,23 @@ public class HtmlWriter {
                 break;
         }
         return result;
+    }
+
+    public static String toHtml(YearMonth ym) {
+        return ym.format(DateUtil.HTML_FORMATTER);
+    }
+
+    public static boolean notEmpty(String s) {
+        return (s != null && s.trim().length() != 0);
+    }
+
+    public static boolean notEmpties(String ... strings) {
+        for (String s : strings) {
+            if (!notEmpty(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String createContactForms(Resume resume) {
