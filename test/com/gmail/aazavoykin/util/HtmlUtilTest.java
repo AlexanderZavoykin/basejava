@@ -6,7 +6,9 @@ import com.gmail.aazavoykin.model.SectionType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HtmlWriterTest {
+import java.time.YearMonth;
+
+public class HtmlUtilTest {
     private AbstractSection section;
 
     @Before
@@ -16,6 +18,9 @@ public class HtmlWriterTest {
 
     @Test
     public void toHtml() {
-        System.out.println(HtmlWriter.toHtml(SectionType.EXPERIENCE, section));
+        System.out.println(HtmlUtil.toHtml(SectionType.EXPERIENCE, section));
+        System.out.println(HtmlUtil.toHtml(YearMonth.of(1990, 8)));
     }
+
+
 }
