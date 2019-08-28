@@ -1,8 +1,7 @@
-<%@ page import="com.gmail.aazavoykin.model.ContactType" %>
-<%@ page import="com.gmail.aazavoykin.model.ListSection" %>
-<%@ page import="com.gmail.aazavoykin.model.SectionType" %>
+<%@ page import="com.gmail.aazavoykin.model.*" %>
 <%@ page import="com.gmail.aazavoykin.model.TextSection" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.gmail.aazavoykin.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -36,7 +35,7 @@
             <jsp:useBean id="contactType" type="com.gmail.aazavoykin.model.ContactType"/>
             <dl>
                 <dt>
-                    <%=contactType.getTitle()%>
+                    ${contactType.title}
                 </dt>
                 <dd>
                     <label>
@@ -46,6 +45,7 @@
                 </dd>
             </dl>
         </c:forEach>
+        <br>
         <hr>
 
         <%-->Sections<--%>
@@ -54,39 +54,182 @@
         <%=HtmlWriter.createSectionForms(resume)%>
         -- or block with tags:
         --%>
-        <c:forEach items="${SectionType.values()}" var="sectionType">
-            <jsp:useBean id="sectionType" type="com.gmail.aazavoykin.model.SectionType"/>
+        <c:forEach items="<%=SectionType.values()%>" var="sectionType">
+            <c:set var="section" value="${resume.getSection(sectionType)}"/>
             <dl>
                 <dt>
-                    <h3>
-                        <%=sectionType.getTitle()%>
-                    </h3>
+                    <h2>
+                        ${sectionType.title}
+                    </h2>
                 </dt>
                 <br>
                 <c:choose>
                     <%-- TextSection --%>
                     <c:when test="${sectionType.equals(SectionType.PERSONAL) || sectionType.equals(SectionType.OBJECTIVE)}">
                         <dd>
-                            <% TextSection section = (TextSection) resume.getSection(sectionType); %>
-                            <% String body = section != null ? section.getBody() : null; %>
-                            <textarea rows="4" cols="150" name="<%=sectionType.name()%>"><c:if
-                                    test="<%=body!=null%>"><%=body%>
-                            </c:if></textarea>
+                            <textarea rows="4" cols="150" name="${sectionType.name()}">${section.getBody()}</textarea>
                         </dd>
                     </c:when>
+
                     <%-- ListSection --%>
                     <c:when test="${sectionType.equals(SectionType.ACHIEVEMENT) || sectionType.equals(SectionType.QUALIFICATION)}">
                         <dd>
-                            <% ListSection section = (ListSection) resume.getSection(sectionType); %>
-                            <% List<String> skills = section != null ? section.getSkills() : null; %>
-                            <textarea rows="4" cols="150" name="<%=sectionType.name()%>"><c:if test="<%=skills!=null%>"><c:forEach
-                                    var="skill" items="<%=skills%>">${skill}</c:forEach></c:if></textarea>
+                            <textarea rows="4" cols="150" name="${sectionType.name()}"><c:forEach var="skill" items="${section.getSkills()}">${skill}</c:forEach></textarea>
                         </dd>
                     </c:when>
+
                     <%-- OrganizationSection --%>
                     <c:when test="${sectionType.equals(SectionType.EXPERIENCE) || sectionType.equals(SectionType.EDUCATION)}">
+                        <dd>
+                            <p>
+                                Поля, обязательные для заполнения, отмечены *.
+                                <br>
+                                Для удаления организации или периода оставьте пустыми все обязательные поля.
+                            </p>
+                                <%-- First, get existing organizations to edit --%>
+                                    <c:forEach var="org" items="${resume.getSection(sectionType).getOrganizations()}"
+                                               varStatus="orgCounter">
+                                        <%-- Organization name input --%>
+                                    <dl>
+                                        <dt><b>Название организации*:</b></dt>
+                                        <dd>
+                                            <input type="text" size="50"
+                                                   placeholder="Оставьте это поле пустым для удаления организации"
+                                                   name="${sectionType.name()}_org${orgCounter.count}_name"
+                                                   value="${org.link.name}"/>
+                                        </dd>
+                                    </dl>
+                                        <%-- Organization url input --%>
+                                    <dl>
+                                        <dt>Url:</dt>
+                                        <dd>
+                                            <input type="text" size="50"
+                                                   name="${sectionType.name()}_org${orgCounter.count}_url"
+                                                   value="${org.link.url}"/>
+                                        </dd>
+                                    </dl>
+                                        <br>
+                                        <%-- Organization periods inputs --%>
+                                    <c:forEach var="period" items="${org.periods}" varStatus="perCounter">
+                                        <dl>
+                                            <dt>Начало*:</dt>
+                                            <dd>
+                                                <input type="text" size="4"
+                                                       placeholder="ММ-ГГГГ"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_start"
+                                                       value="${period.startDate.format(DateUtil.HTML_FORMATTER)}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>Окончание*:</dt>
+                                            <dd>
+                                                <input type="text" size="4"
+                                                       placeholder="ММ-ГГГГ"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_end"
+                                                       value="${period.endDate.format(DateUtil.HTML_FORMATTER)}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>Заголовок*:</dt>
+                                            <dd>
+                                                <input type="text" size="50"
+                                                       placeholder="Оставьте это поле пустым для удаления периода"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_title"
+                                                       value="${period.title}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>Описание:</dt>
+                                            <dd>
+                                    <textarea rows="4" cols="150" name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_descr">${period.description}</textarea>
+                                            </dd>
+                                        </dl>
+                                    </c:forEach>
+                                        <%-- Inputs for new organization`s period --%>
+                                        <h4><i>Добавить новый период в организации ${org.link.name}:</i></h4>
+                                        <dl>
+                                            <dt><i>Начало*:</i></dt>
+                                            <dd>
+                                                <input type="text" size="4"
+                                                       placeholder="ММ-ГГГГ"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_start">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt><i>Окончание*:</i></dt>
+                                            <dd>
+                                                <input type="text" size="4"
+                                                       placeholder="ММ-ГГГГ"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_end">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt><i>Заголовок*:</i></dt>
+                                            <dd>
+                                                <input type="text" size="50"
+                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_title">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt><i>Описание:</i></dt>
+                                            <dd>
+                                                <textarea rows="4" cols="150" name="${sectionType.name()}_org${orgCounter.count}_perNEW_descr"></textarea>
+                                            </dd>
+                                        </dl>
+                                </c:forEach>
+                                    <br>
 
+                                <%-- Now, create inputs for adding new organization --%>
+                                    <h4><i>Добавить новую организацию:</i></h4>
+                                    <dl>
+                                        <dt><b><i>Название организации*:</i></b></dt>
+                                        <dd>
+                                            <input type="text" size="50"
+                                                   name="${sectionType.name()}_orgNEW_name"
+                                                   value="${org.link.name}"/>
+                                        </dd>
+                                    </dl>
 
+                                    <dl>
+                                        <dt><i>Url:</i></dt>
+                                        <dd>
+                                            <input type="text" size="50"
+                                                   name="${sectionType.name()}_orgNEW_url"
+                                                   value="${org.link.url}"/>
+                                        </dd>
+                                    </dl>
+                                    <br>
+                                    <dl>
+                                        <dt><i>Начало*:</i></dt>
+                                        <dd>
+                                            <input type="text" size="4"
+                                                   placeholder="ММ-ГГГГ"
+                                                   name="${sectionType.name()}_orgNEW_start">
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt><i>Окончание*:</i></dt>
+                                        <dd>
+                                            <input type="text" size="4"
+                                                   placeholder="ММ-ГГГГ"
+                                                   name="${sectionType.name()}_orgNEW_end">
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt><i>Заголовок*:</i></dt>
+                                        <dd>
+                                            <input type="text" size="50"
+                                                   name="${sectionType.name()}_orgNEW_title">
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt><i>Описание:</i></dt>
+                                        <dd>
+                                            <textarea rows="4" cols="150" name="${sectionType.name()}_orgNEW_descr"></textarea>
+                                        </dd>
+                                    </dl>
+
+                        </dd>
                     </c:when>
                 </c:choose>
             </dl>
