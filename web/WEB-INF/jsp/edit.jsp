@@ -95,7 +95,7 @@
                                         <dd>
                                             <input type="text" size="50"
                                                    placeholder="Оставьте это поле пустым для удаления организации"
-                                                   name="${sectionType.name()}_org${orgCounter.count}_name"
+                                                   name="${sectionType.name()}_name"
                                                    value="${org.link.name}"/>
                                         </dd>
                                     </dl>
@@ -104,19 +104,19 @@
                                         <dt>Url:</dt>
                                         <dd>
                                             <input type="text" size="50"
-                                                   name="${sectionType.name()}_org${orgCounter.count}_url"
+                                                   name="${sectionType.name()}_${orgCounter.count}_url"
                                                    value="${org.link.url}"/>
                                         </dd>
                                     </dl>
                                         <br>
                                         <%-- Organization periods inputs --%>
-                                    <c:forEach var="period" items="${org.periods}" varStatus="perCounter">
+                                    <c:forEach var="period" items="${org.periods}">
                                         <dl>
                                             <dt>Начало*:</dt>
                                             <dd>
                                                 <input type="text" size="4"
                                                        placeholder="ММ-ГГГГ"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_start"
+                                                       name="${sectionType.name()}_${orgCounter.count}_start"
                                                        value="${period.startDate.format(DateUtil.HTML_FORMATTER)}">
                                             </dd>
                                         </dl>
@@ -125,7 +125,7 @@
                                             <dd>
                                                 <input type="text" size="4"
                                                        placeholder="ММ-ГГГГ"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_end"
+                                                       name="${sectionType.name()}_${orgCounter.count}_end"
                                                        value="${period.endDate.format(DateUtil.HTML_FORMATTER)}">
                                             </dd>
                                         </dl>
@@ -134,14 +134,14 @@
                                             <dd>
                                                 <input type="text" size="50"
                                                        placeholder="Оставьте это поле пустым для удаления периода"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_title"
+                                                       name="${sectionType.name()}_${orgCounter.count}_title"
                                                        value="${period.title}">
                                             </dd>
                                         </dl>
                                         <dl>
                                             <dt>Описание:</dt>
                                             <dd>
-                                    <textarea rows="4" cols="150" name="${sectionType.name()}_org${orgCounter.count}_per${perCounter.count}_descr">${period.description}</textarea>
+                                    <textarea rows="4" cols="150" name="${sectionType.name()}_${orgCounter.count}_descr">${period.description}</textarea>
                                             </dd>
                                         </dl>
                                     </c:forEach>
@@ -152,7 +152,7 @@
                                             <dd>
                                                 <input type="text" size="4"
                                                        placeholder="ММ-ГГГГ"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_start">
+                                                       name="${sectionType.name()}_${orgCounter.count}_NEW_start">
                                             </dd>
                                         </dl>
                                         <dl>
@@ -160,20 +160,20 @@
                                             <dd>
                                                 <input type="text" size="4"
                                                        placeholder="ММ-ГГГГ"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_end">
+                                                       name="${sectionType.name()}_${orgCounter.count}_NEW_end">
                                             </dd>
                                         </dl>
                                         <dl>
                                             <dt><i>Заголовок*:</i></dt>
                                             <dd>
                                                 <input type="text" size="50"
-                                                       name="${sectionType.name()}_org${orgCounter.count}_perNEW_title">
+                                                       name="${sectionType.name()}_${orgCounter.count}_NEW_title">
                                             </dd>
                                         </dl>
                                         <dl>
                                             <dt><i>Описание:</i></dt>
                                             <dd>
-                                                <textarea rows="4" cols="150" name="${sectionType.name()}_org${orgCounter.count}_perNEW_descr"></textarea>
+                                                <textarea rows="4" cols="150" name="${sectionType.name()}_${orgCounter.count}_NEW_descr"></textarea>
                                             </dd>
                                         </dl>
                                 </c:forEach>
@@ -185,7 +185,7 @@
                                         <dt><b><i>Название организации*:</i></b></dt>
                                         <dd>
                                             <input type="text" size="50"
-                                                   name="${sectionType.name()}_orgNEW_name"
+                                                   name="${sectionType.name()}_NEW_name"
                                                    value="${org.link.name}"/>
                                         </dd>
                                     </dl>
@@ -194,7 +194,7 @@
                                         <dt><i>Url:</i></dt>
                                         <dd>
                                             <input type="text" size="50"
-                                                   name="${sectionType.name()}_orgNEW_url"
+                                                   name="${sectionType.name()}_NEW_url"
                                                    value="${org.link.url}"/>
                                         </dd>
                                     </dl>
@@ -204,7 +204,7 @@
                                         <dd>
                                             <input type="text" size="4"
                                                    placeholder="ММ-ГГГГ"
-                                                   name="${sectionType.name()}_orgNEW_start">
+                                                   name="${sectionType.name()}_NEW_start">
                                         </dd>
                                     </dl>
                                     <dl>
@@ -212,20 +212,20 @@
                                         <dd>
                                             <input type="text" size="4"
                                                    placeholder="ММ-ГГГГ"
-                                                   name="${sectionType.name()}_orgNEW_end">
+                                                   name="${sectionType.name()}_NEW_end">
                                         </dd>
                                     </dl>
                                     <dl>
                                         <dt><i>Заголовок*:</i></dt>
                                         <dd>
                                             <input type="text" size="50"
-                                                   name="${sectionType.name()}_orgNEW_title">
+                                                   name="${sectionType.name()}_NEW_title">
                                         </dd>
                                     </dl>
                                     <dl>
                                         <dt><i>Описание:</i></dt>
                                         <dd>
-                                            <textarea rows="4" cols="150" name="${sectionType.name()}_orgNEW_descr"></textarea>
+                                            <textarea rows="4" cols="150" name="${sectionType.name()}_NEW_descr"></textarea>
                                         </dd>
                                     </dl>
 
