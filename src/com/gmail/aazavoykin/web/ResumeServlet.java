@@ -146,7 +146,12 @@ public class ResumeServlet extends HttpServlet {
                     /*
                      ** create new section and replace existing section in Resume r with the new one
                      */
-                    r.addSection(st, new OrganizationSection(orgList));
+                    if (orgList.size() != 0) {
+                        r.addSection(st, new OrganizationSection(orgList));
+                    } else {
+                        r.removeSection(st);
+                    }
+
             }
         }
         if ("add".equals(action)) {
