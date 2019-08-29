@@ -1,13 +1,12 @@
 package com.gmail.aazavoykin;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final File PROPS = new File(getProjectDir(), "config/resumes.properties");
+    private static final String PROPS = "/resumes.properties";
     private static final Config INSTANCE = new Config();
 
     private Properties properties = new Properties();
@@ -18,14 +17,14 @@ public class Config {
     private String dbPassword;
 
     private Config() {
-        try (InputStream is = new FileInputStream(PROPS)) {
+        try (InputStream is = Config.class.getResourceAsStream(PROPS)) {
             properties.load(is);
             storageDir = new File(properties.getProperty("storage.dir"));
             dbUrl = properties.getProperty("db.url");
             dbUser = properties.getProperty("db.user");
             dbPassword = properties.getProperty("db.password");
         } catch (IOException e) {
-            throw new IllegalStateException("Invalid config file: " + PROPS.getAbsolutePath());
+            throw new IllegalStateException("Invalid config file: " + PROPS);
         }
     }
 
